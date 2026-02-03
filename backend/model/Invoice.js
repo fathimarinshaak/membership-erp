@@ -23,14 +23,7 @@ const invoiceSchema = new mongoose.Schema({
         type: String,
         enum: ['PENDING', 'PAID'],
         default: 'PENDING'
-    },
-    secretToken: {
-        type: String,
-        required: true,
-        unique: true,
-        index: true
-    },
-    expiresAt: Date
+    }
 }, { timestamps: true });
 
 module.exports = mongoose.model('Invoice', invoiceSchema);
