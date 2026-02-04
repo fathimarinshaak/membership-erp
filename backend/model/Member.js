@@ -27,7 +27,21 @@ const memberSchema = new mongoose.Schema({
         type: String,
         enum: ['ACTIVE', 'INACTIVE'],
         default: 'ACTIVE'
-    }
+    },
+    secretToken: {
+        type: String,
+        required: true,
+        unique: true,
+        index: true
+    },
+    expiresAt: Date
 }, { timestamps: true });
+
+memberSchema.pre('save', function(next) {
+  if (!this.secretToken) {
+    this.secretToken = crypto.randomBytes(32).toString('hex');
+  }
+  next();
+});
 
 module.exports = mongoose.model('Member', memberSchema);
