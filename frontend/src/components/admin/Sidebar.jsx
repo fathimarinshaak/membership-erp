@@ -3,8 +3,19 @@ import { NavLink, useNavigate } from "react-router";
 const Sidebar = () => {
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    navigate("/admin/login");
+  const handleLogout =async () => {
+    try {
+      e.preventDefault()
+      const { data } = await axios.post('/api/auth/logout')
+      if (!data.success) {
+        toast.error(data.msg)
+        return;
+      }
+      setIsLoggedIn(false)
+      navigate('/admin/login')
+    } catch (error) {
+      toast.error(error.message)
+    }
   };
 
   return (
