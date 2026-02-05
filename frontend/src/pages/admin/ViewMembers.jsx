@@ -4,19 +4,19 @@ export default function ViewMember() {
   const [members, setMembers] = useState([]);
 
   // Fetch all members
-  useEffect(() => {
-    const fetchMembers = async () => {
-      try {
-        const res = await fetch("http://localhost:5000/api/admin/members");
-        const data = await res.json();
-        setMembers(data);
-      } catch (err) {
-        console.error("Error fetching members:", err);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchMembers = async () => {
+  //     try {
+  //       const res = await fetch("http://localhost:5000/api/admin/members");
+  //       const data = await res.json();
+  //       setMembers(data);
+  //     } catch (err) {
+  //       console.error("Error fetching members:", err);
+  //     }
+  //   };
 
-    fetchMembers();
-  }, []);
+  //   fetchMembers();
+  // }, []);
 
   return (
     <div className="min-h-screen bg-gray-100 p-8">
