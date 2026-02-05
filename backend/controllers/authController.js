@@ -26,7 +26,7 @@ exports.adminLogin = async (req, res) => {
             .json({ success: true , msg:"admin successfully logged in!"});
 
     } catch (error) {
-        return res.json({success:false , msg:error.message})
+        return res.json({success:false ,error:"admin login failed!"})
     }
 }
 

@@ -11,7 +11,15 @@ import AdminGuard from "./guards/adminguard";
 export default function App() {
   return (
     <>
-      <ToastContainer />
+      <ToastContainer  
+        position="bottom-center"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        pauseOnHover
+        draggable
+        theme="dark"/>
 
       <Routes>
         {/* PUBLIC */}
