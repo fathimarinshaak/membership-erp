@@ -42,3 +42,11 @@ exports.adminLogout = async (req, res) => {
         return res.json({success:false , msg:error.message})
     }
 }
+
+exports.isAuthenticated = (req,res)=>{
+    try {
+        return res.json({success:true, msg:"Authentication success"})
+    } catch (error) {
+        return res.json({success:false , msg:error.message})
+    }
+}
