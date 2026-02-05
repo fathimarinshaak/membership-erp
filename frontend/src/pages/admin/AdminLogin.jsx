@@ -19,10 +19,10 @@ const AdminLogin = () => {
       )
       if(!data.success){
         setbackenddata(data.msg)
-        return
+        return;
       }
+      console.log(data.msg)
       setIsLoggedIn(true)
-      toast.success("Login successful");
       navigate('/admin')
     } catch (error) {
       console.log(error.message)
