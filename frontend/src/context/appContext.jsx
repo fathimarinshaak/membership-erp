@@ -6,7 +6,7 @@ export const appContent = createContext()
 
 export const AppContextProvider = (props) => {
     const backendUrl = import.meta.env.VITE_API_URL
-    const [isLoggesIn, setIsLoggedIn] = useState(false)
+    const [isLoggedIn, setIsLoggedIn] = useState(false)
 
     const getAuthState = async () => {
         try {
@@ -25,7 +25,7 @@ export const AppContextProvider = (props) => {
     
     const value = {
         backendUrl,
-        isLoggesIn, setIsLoggedIn
+        isLoggedIn, setIsLoggedIn
     }
 
     return (
