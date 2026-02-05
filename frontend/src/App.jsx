@@ -10,7 +10,6 @@ export default function App() {
       <Routes>
         {/* AdminLogin */}
         <Route path="/admin/login" element={<Login />} />
-
         <Route
           path="/"
           element={

@@ -31,18 +31,23 @@ const memberSchema = new mongoose.Schema({
     },
     secretToken: {
         type: String,
-        required: true,
+        // required: true,
         unique: true,
         index: true
     },
     expiresAt: Date
 }, { timestamps: true });
 
-memberSchema.pre('save', function(next) {
+memberSchema.pre('save', function() {
   if (!this.secretToken) {
     this.secretToken = crypto.randomBytes(32).toString('hex');
   }
-  next();
+//   next();
 });
+// memberSchema.pre('save', async function () {
+//   if (!this.secretToken) {
+//     this.secretToken = crypto.randomBytes(32).toString('hex');
+//   }
+// });
 
 module.exports = mongoose.model('Member', memberSchema);
