@@ -1,4 +1,8 @@
 import { payNow } from "./pay";
+import{BrouserRouter,Routes,Route} from "react-router"
+import login from "./pages/admin/login"
+
+
 
 export default function App() {
   return (
