@@ -2,9 +2,9 @@ import React from "react";
 
 const AdminLogin = () => {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600">
-      
-      {/* Glass Card */}
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700">
+
+      {/* Card */}
       <div className="w-full max-w-md p-8 rounded-2xl
                       bg-white/20 backdrop-blur-xl
                       border border-white/30
@@ -15,8 +15,7 @@ const AdminLogin = () => {
         </h1>
 
         <form className="space-y-5">
-          
-          {/* Email */}
+
           <div>
             <label className="block text-white mb-1">
               Email
@@ -30,21 +29,18 @@ const AdminLogin = () => {
             />
           </div>
 
-          {/* Password */}
           <div>
             <label className="block text-white mb-1">
               Password
             </label>
             <input
               type="password"
-              placeholder="••••••••"
               className="w-full px-4 py-2 rounded-lg
                          bg-white/30 text-white placeholder-white/70
                          focus:outline-none focus:ring-2 focus:ring-white"
             />
           </div>
 
-          {/* Button */}
           <button
             type="submit"
             className="w-full py-2 rounded-lg font-semibold
