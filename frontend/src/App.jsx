@@ -1,15 +1,21 @@
-import { BrowserRouter, Routes, Route } from "react-router";
 import Login from "./pages/admin/AdminLogin";
 import { payNow } from "./pay";
 import AddMember from "./pages/admin/addMember";
 import ViewMember from "./pages/admin/ViewMembers";
+import { Route, Routes } from "react-router";
+import { ToastContainer } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
 
 export default function App() {
   return (
-    <BrowserRouter>
+    <div>
+      <ToastContainer/>
+
       <Routes>
-        {/* AdminLogin */}
+
         <Route path="/admin/login" element={<Login />} />
+        <Route path="/admin/addMember" element={<AddMember />} />
+        <Route path="/admin/viewMember" element={<ViewMember />} />
 
         <Route
           path="/"
@@ -32,10 +38,8 @@ export default function App() {
             </div>
           }
         />
-          <Route path="/admin/addMember" element={<AddMember />} />
-        <Route path="/admin/viewMember" element={<ViewMember />} />
+      
       </Routes>
-    </BrowserRouter>
-    
+    </div>
   );
 }

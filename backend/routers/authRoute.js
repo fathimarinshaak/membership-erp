@@ -1,4 +1,5 @@
-const { adminLogin, adminLogout, adminRegister } = require('../controllers/authController')
+const { adminLogin, adminLogout, adminRegister, isAuthenticated } = require('../controllers/authController')
+const { adminOnly } = require('../middleware/auth')
 
 const router = require('express').Router()
 
@@ -9,5 +10,9 @@ router
 router
     .route('/logout')
     .post(adminLogout)
+
+router
+    .route('/isAuth')
+    .get(adminOnly,isAuthenticated)
 
 module.exports = router
