@@ -1,6 +1,7 @@
 import { useState } from "react";
+import axios from "../../services/axios";
 
-export default function AddMember() {
+export default  function AddMember() {
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -18,7 +19,7 @@ export default function AddMember() {
     });
   };
 
-  const handleSubmit = (e) => {
+  const  handleSubmit = async(e) => {
     e.preventDefault();
 
     const memberData = {
@@ -33,10 +34,33 @@ export default function AddMember() {
       status: form.status,
     };
 
+    
     console.log("Submitting Member:", memberData);
 
+    try {
+    const res = await axios.post("/api/admin/addMember", memberData);
+
+    console.log("Member saved:", res.data);
+    alert("Member added successfully!");
+
+    // Reset form
+    setForm({
+      name: "",
+      email: "",
+      phone: "",
+      whatsappNumber: "",
+      personalTrainerName: "",
+      personalTrainerPhone: "",
+      status: "ACTIVE",
+    });
+
+  } catch (err) {
+    console.error("Error adding member:", err);
+    alert("Failed to add member");
+  }
+};
     // TODO: axios.post("/api/members", memberData)
-  };
+  
 
   return (
     <div className="w-full min-h-screen bg-gray-100 flex items-center justify-center p-6">
