@@ -3,9 +3,20 @@ import AddMember from "./pages/admin/addMember";
 import ViewMember from "./pages/admin/ViewMembers";
 import Home from "./pages/admin/Home";
 import AdminLayout from "./layouts/AdminLayout";
-import { Route, Routes } from "react-router";
+import { Route, Routes ,Outlet } from "react-router";
 import { ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
+
+
+
+const UserLayout = () => (
+  <div className="min-h-screen bg-white">
+    <div className="bg-indigo-600 text-white p-4">Member Area</div>
+    <div className="p-6">
+      <Outlet />
+    </div>
+  </div>
+);
 
 export default function App() {
   return (
@@ -21,6 +32,6 @@ export default function App() {
           <Route path="viewMember" element={<ViewMember />} />
         </Route>
       </Routes>
-    </BrowserRouter>
+    </div>
   );
 }
