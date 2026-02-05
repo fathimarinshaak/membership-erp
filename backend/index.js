@@ -15,10 +15,14 @@ app.use(cors({
 		credentials: true,
 	})
 );
+
+const authRouter = require('./routers/authRoute')
+const adminRouter = require('./routers/adminRoute')
+
+app.use('/api/auth', authRouter)
+app.use('/api/admin', adminRouter)
+
 const port = process.env.PORT || 5000;
-
-
-
 
 const razorpay = require('./utils/razorpay');
 app.post("/api/payment/create-order", async (req, res) => {

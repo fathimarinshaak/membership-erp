@@ -9,7 +9,6 @@ const paymentSchema = new mongoose.Schema({
     method: {
         type: String,
         enum: ['RAZORPAY',
-            'STRIPE',
             'PHONEPE',
             'UPI',
             'CASH',

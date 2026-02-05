@@ -1,6 +1,8 @@
 import { BrowserRouter, Routes, Route } from "react-router";
 import Login from "./pages/admin/AdminLogin";
 import { payNow } from "./pay";
+import AddMember from "./pages/admin/addMember";
+import ViewMember from "./pages/admin/ViewMembers";
 
 export default function App() {
   return (
@@ -30,7 +32,10 @@ export default function App() {
             </div>
           }
         />
+          <Route path="/admin/addMember" element={<AddMember />} />
+        <Route path="/admin/viewMember" element={<ViewMember />} />
       </Routes>
     </BrowserRouter>
+    
   );
 }
