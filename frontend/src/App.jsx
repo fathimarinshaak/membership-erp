@@ -2,9 +2,27 @@ import Login from "./pages/admin/AdminLogin";
 import { payNow } from "./pay";
 import AddMember from "./pages/admin/addMember";
 import ViewMember from "./pages/admin/ViewMembers";
-import { Route, Routes } from "react-router";
+import { Outlet, Route, Routes } from "react-router";
 import { ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
+
+const AdminLayout = () => (
+  <div className="min-h-screen bg-gray-100">
+    <div className="bg-gray-900 text-white p-4">Admin Panel</div>
+    <div className="p-6">
+      <Outlet />
+    </div>
+  </div>
+);
+
+const UserLayout = () => (
+  <div className="min-h-screen bg-white">
+    <div className="bg-indigo-600 text-white p-4">Member Area</div>
+    <div className="p-6">
+      <Outlet />
+    </div>
+  </div>
+);
 
 export default function App() {
   return (
