@@ -29,7 +29,7 @@ const Sidebar = () => {
         {[
           { to: "/admin", label: "Home" },
           { to: "/admin/viewMember", label: "Members" },
-          { to: "/admin/plans", label: "Membership Plans" },
+          { to: "/admin/viewplan", label: "Membership Plans" },
           { to: "/admin/payments", label: "Payments" },
         ].map((item) => (
           <li key={item.to}>

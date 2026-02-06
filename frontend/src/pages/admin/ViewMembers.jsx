@@ -1,12 +1,20 @@
-import { useEffect, useState  } from "react";
+import { useEffect, useState } from "react";
 import axios from "../../services/axios";
+import { useNavigate } from "react-router";
 
 export default function ViewMember() {
-  
   const [members, setMembers] = useState([]);
   const [selectedMember, setSelectedMember] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
+  // ⭐ NEW STATES FOR PLAN SELECTION
+  const [isPlanModalOpen, setIsPlanModalOpen] = useState(false);
+  const [plans, setPlans] = useState([]);
+  const [selectedPlan, setSelectedPlan] = useState(null);
+
+  const [isPlanHistoryOpen, setIsPlanHistoryOpen] = useState(false);
+  const [planHistory, setPlanHistory] = useState([]);
 
   const [editForm, setEditForm] = useState({
     name: "",
@@ -17,6 +25,8 @@ export default function ViewMember() {
     personalTrainerPhone: "",
     status: "ACTIVE",
   });
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchMembers = async () => {
@@ -30,6 +40,17 @@ export default function ViewMember() {
     fetchMembers();
   }, []);
 
+  // ⭐ FETCH MEMBERSHIP PLANS WHEN OPENING PLAN MODAL
+  const fetchPlans = async () => {
+    try {
+      const res = await axios.get("http://localhost:3000/api/admin/viewplan");
+      setPlans(res.data);
+    } catch (err) {
+      console.error(err);
+      alert("Error fetching plans");
+    }
+  };
+
   const openModal = (member) => {
     setSelectedMember(member);
     setIsModalOpen(true);
@@ -39,6 +60,7 @@ export default function ViewMember() {
     setSelectedMember(null);
     setIsModalOpen(false);
   };
+
 
   const deleteMember = async (id) => {
     if (!window.confirm("Are you sure you want to delete this member?")) return;
@@ -117,23 +139,108 @@ export default function ViewMember() {
     setEditForm({ ...editForm, [name]: value });
   };
 
+  // ⭐ OPEN PLAN MODAL
+  const openPlanModal = () => {
+    fetchPlans();
+    setIsPlanModalOpen(true);
+  };
+
+  const closePlanModal = () => {
+    setSelectedPlan(null);
+    setIsPlanModalOpen(false);
+  };
+
+  const confirmPlan = async () => {
+    if (!selectedPlan || !selectedMember) return;
+
+    try {
+      const res = await axios.post(
+        `/api/admin/assignPlan/${selectedMember._id}`,
+        {
+          planId: selectedPlan._id,
+        }
+      );
+
+      if (res.data.success) {
+        // Update member locally
+        setMembers(
+          members.map((m) =>
+            m._id === selectedMember._id
+              ? {
+                ...m,
+                latestPlan: {
+                  ...selectedPlan,
+                  assignedAt: new Date(),
+                  expiresAt: new Date(Date.now() + selectedPlan.durationInDays * 86400000)
+                }
+              }
+              : m
+          )
+        );
+
+        setSelectedMember({
+          ...selectedMember,
+          latestPlan: {
+            ...selectedPlan,
+            assignedAt: new Date(),
+            expiresAt: new Date(Date.now() + selectedPlan.durationInDays * 86400000)
+          }
+        });
+
+
+        setSelectedMember({
+          ...selectedMember,
+          latestPlan: {
+            ...selectedPlan,
+            assignedAt: new Date(),
+            expiresAt: new Date(Date.now() + selectedPlan.durationInDays * 24 * 60 * 60 * 1000)
+          }
+        });
+
+        setIsPlanModalOpen(false);
+        setSelectedPlan(null);
+        alert("Plan added successfully!");
+      } else {
+        alert(res.data.message || "failed");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Error assigning plan");
+    }
+  };
+
+  const openPlanHistory = async (memberId) => {
+    try {
+      const res = await axios.get(`/api/admin/planHistory/${memberId}`);
+
+      if (res.data.success) {
+        setPlanHistory(res.data.history);
+        setIsPlanHistoryOpen(true);
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Error loading plan history");
+    }
+  };
   return (
-        
     <div className="min-h-screen bg-gradient-to-br from-[#0f0f0f] via-[#121212] to-black text-gray-200 p-8">
       <div className="mb-6 flex items-center justify-between">
-  <h1 className="text-3xl font-bold tracking-wide text-gray-100">
-    Members Dashboard
-  </h1>
+        <h1 className="text-3xl font-bold tracking-wide text-gray-100">
+          Members Dashboard
+        </h1>
 
-  <button
-    type="submit"
-    className="text-white py-2 px-6 rounded-full text-sm font-semibold transition 
-               bg-orange-500/20 hover:bg-orange-500/30 
-               border border-orange-400/40" onClick={() => navigate("/admin/addMember")}
-  >
-    Add Member
-  </button>
-</div>
+        <button
+          type="submit"
+          className="text-white py-2 px-6 rounded-full text-sm font-semibold transition
+            bg-orange-500/20 hover:bg-orange-500/30
+            border border-orange-400/40"
+          onClick={() => navigate("/admin/addMember")}
+        >
+          Add Member
+        </button>
+      </div>
+
+      {/* TABLE */}
       <div className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl shadow-xl overflow-hidden">
         <table className="w-full">
           <thead className="bg-white/5">
@@ -166,34 +273,36 @@ export default function ViewMember() {
                   <td className="px-6 py-4">{member.whatsappNumber}</td>
                   <td className="px-6 py-4">
                     <span
-                      className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                        member.status === "ACTIVE"
-                          ? "bg-green-500/20 text-green-400"
-                          : "bg-red-500/20 text-red-400"
-                      }`}
+                      className={`px-3 py-1 rounded-full text-xs font-semibold ${member.status === "ACTIVE"
+                        ? "bg-green-500/20 text-green-400"
+                        : "bg-red-500/20 text-red-400"
+                        }`}
                     >
                       {member.status}
                     </span>
                   </td>
                   <td className="px-6 py-4 text-right space-x-4">
-                    <button
-                      onClick={() => openModal(member)}
-                      className="text-blue-400 hover:text-blue-300"
-                    >
-                      View
-                    </button>
-                    <button
-                      onClick={() => openEditModal(member)}
-                      className="text-yellow-400 hover:text-yellow-300"
-                    >
-                      Edit
-                    </button>
-                    <button
-                      onClick={() => deleteMember(member._id)}
-                      className="text-red-400 hover:text-red-300"
-                    >
-                      Delete
-                    </button>
+                    <div className="flex items-center justify-end gap-3">
+
+                      <button
+                        onClick={() => openModal(member)}
+                        className="text-blue-400 hover:text-blue-300"
+                      >
+                        View
+                      </button>
+                      <button
+                        onClick={() => openEditModal(member)}
+                        className="text-yellow-400 hover:text-yellow-300"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => deleteMember(member._id)}
+                        className="text-red-400 hover:text-red-300"
+                      >
+                        Delete
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))
@@ -227,12 +336,171 @@ export default function ViewMember() {
                 {selectedMember.personalTrainer?.phone || "-"}
               </p>
             </div>
+            <div className="mt-4 border-t border-white/10 pt-4">
+              <h3 className="font-semibold mb-2">Current Plan</h3>
 
-            <div className="flex justify-end mt-6">
-              <button className="bg-blue-600 hover:bg-blue-700 px-5 py-2 rounded-xl">
+              {selectedMember.latestPlan ? (
+                <div className="space-y-1 text-gray-300">
+                  <p>{selectedMember.latestPlan.name}</p>
+                  <p>{selectedMember.latestPlan.durationInDays} days</p>
+                  <p>₹{selectedMember.latestPlan.price}</p>
+
+                  <p className="text-xs text-gray-400">
+                    Assigned: {new Date(selectedMember.latestPlan.assignedAt).toLocaleDateString()}
+                  </p>
+
+                  <p className="text-xs text-gray-400">
+                    Expires: {new Date(selectedMember.latestPlan.expiresAt).toLocaleDateString()}
+                  </p>
+                </div>
+              ) : (
+                <p className="text-gray-500">No plan assigned</p>
+              )}
+            </div>
+
+            {/* CURRENT PLAN DISPLAY */}
+            {/* {selectedMember.currentPlan && (
+  <div className="mt-4 p-4 bg-green-600/10 border border-green-500/30 rounded-xl">
+    <h3 className="text-lg font-bold text-green-400">Current Plan</h3>
+    <p className="text-gray-300">{selectedMember.currentPlan.name}</p>
+    <p className="text-gray-300">
+      {selectedMember.currentPlan.durationInDays} days | ₹
+      {selectedMember.currentPlan.price}
+    </p>
+  </div>
+)} */}
+
+            {/* BUTTONS */}
+            <div className="flex justify-between mt-6">
+
+              {/* Close Badge */}
+              <button
+                onClick={closeModal}
+                className="
+      px-4 py-2 rounded-full text-sm font-semibold
+      bg-red-500/15 text-red-400
+      border border-red-500/30
+      hover:bg-red-500/25 hover:text-red-300
+      transition
+    "
+              >
+                Close
+              </button>
+
+              {/* Add Plan Badge */}
+              <button
+                onClick={openPlanModal}
+                className="
+      px-4 py-2 rounded-full text-sm font-semibold
+      bg-orange-500/15 text-orange-400
+      border border-orange-500/30
+      hover:bg-orange-500/25 hover:text-orange-300
+      transition
+    "
+              >
                 Add Plan
               </button>
+              <button
+                onClick={() => openPlanHistory(selectedMember._id)}
+                className="
+    px-4 py-2 rounded-full text-sm font-semibold
+    bg-blue-500/15 text-blue-400
+    border border-blue-500/30
+    hover:bg-blue-500/25 hover:text-blue-300
+    transition
+  "
+              >
+                My Plans
+              </button>
+
             </div>
+
+
+          </div>
+        </div>
+      )}
+
+      {/* ⭐ ADD PLAN MODAL */}
+      {isPlanModalOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur"
+          onClick={(e) => e.target === e.currentTarget && closePlanModal()}
+        >
+          <div className="bg-[#181818] border border-white/10 rounded-2xl p-6 w-full max-w-2xl shadow-2xl">
+
+            <h2 className="text-2xl font-bold mb-4 text-gray-100">
+              Select Membership Plan
+            </h2>
+
+            <div className="space-y-3 max-h-80 overflow-y-auto pr-2">
+              {plans.map((plan) => (
+                <div
+                  key={plan._id}
+                  onClick={() => setSelectedPlan(plan)}
+                  className={`p-4 rounded-xl border cursor-pointer transition 
+                    ${selectedPlan?._id === plan._id
+                      ? "border-blue-500 bg-blue-500/20"
+                      : "border-white/10 bg-white/5 hover:bg-white/10"
+                    }`}
+                >
+                  <h3 className="text-lg font-semibold text-gray-200">
+                    {plan.name}
+                  </h3>
+                  <p className="text-gray-400 text-sm">
+                    {plan.durationInDays} days | ₹{plan.price}
+                  </p>
+                  <p className="text-gray-500 text-xs mt-1">
+                    Category: {plan.category}
+                  </p>
+                </div>
+              ))}
+            </div>
+
+            {/* Selected Plan Preview */}
+            {selectedPlan && (
+              <div className="mt-4 p-4 bg-blue-600/10 border border-blue-500/30 rounded-xl">
+                <h3 className="text-lg font-bold text-blue-400">Selected Plan</h3>
+                <p className="text-gray-300">{selectedPlan.name}</p>
+                <p className="text-gray-300">
+                  {selectedPlan.durationInDays} days | ₹{selectedPlan.price}
+                </p>
+              </div>
+            )}
+
+            <div className="flex justify-end mt-6 space-x-3">
+
+              {/* Close Badge */}
+              <button
+                onClick={closePlanModal}
+                className="
+      px-4 py-2 rounded-full text-sm font-semibold
+      bg-red-500/15 text-red-400
+      border border-red-500/30
+      hover:bg-red-500/25 hover:text-red-300
+      transition
+    "
+              >
+                Close
+              </button>
+
+              {/* Confirm Plan Badge */}
+              <button
+                onClick={confirmPlan}
+                disabled={!selectedPlan}
+                className={`
+      px-4 py-2 rounded-full text-sm font-semibold
+      border transition
+      ${selectedPlan
+                    ? "bg-green-500/15 text-green-400 border-green-500/30 hover:bg-green-500/25 hover:text-green-300"
+                    : "bg-gray-500/10 text-gray-500 border-gray-500/20 cursor-not-allowed"
+                  }
+    `}
+              >
+                Confirm Plan
+              </button>
+
+            </div>
+
           </div>
         </div>
       )}
@@ -286,6 +554,64 @@ export default function ViewMember() {
           </div>
         </div>
       )}
+
+
+
+      {isPlanHistoryOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur"
+          onClick={(e) => e.target === e.currentTarget && setIsPlanHistoryOpen(false)}
+        >
+          <div className="bg-[#181818] border border-white/10 rounded-2xl p-6 w-full max-w-lg shadow-2xl">
+            <h2 className="text-2xl font-bold mb-4 text-gray-100">
+              Plan History
+            </h2>
+
+            {planHistory.length === 0 ? (
+              <p className="text-gray-400 text-center py-6">No plans assigned</p>
+            ) : (
+              <div className="space-y-4 max-h-96 overflow-y-auto">
+                {planHistory.map((item) => (
+                  <div
+                    key={item._id}
+                    className="p-4 rounded-xl border border-white/10 bg-white/5"
+                  >
+                    <h3 className="text-lg font-semibold text-gray-200">
+                      {item.planId.name}
+                    </h3>
+
+                    <p className="text-gray-400 text-sm">
+                      {item.planId.durationInDays} days | ₹{item.planId.price}
+                    </p>
+
+                    <p className="text-xs text-gray-500">
+                      Start: {new Date(item.startDate).toLocaleDateString()}
+                    </p>
+
+                    <p className="text-xs text-gray-500">
+                      End: {new Date(item.endDate).toLocaleDateString()}
+                    </p>
+
+                    <p className="text-xs mt-1 text-blue-400">
+                      Status: {item.status}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            <div className="text-right mt-4">
+              <button
+                onClick={() => setIsPlanHistoryOpen(false)}
+                className="px-4 py-2 rounded-full bg-red-500/20 border border-red-500/40 text-red-300"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }

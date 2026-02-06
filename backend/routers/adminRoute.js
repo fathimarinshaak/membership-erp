@@ -1,5 +1,5 @@
 const { createPlan, getPlans, updatePlan, deletePlan } = require('../controllers/membershipController')
-const { dashboard, AddMember, viewMembers, deleteMember, updateMember, editMember } = require('../controllers/adminController')
+const { dashboard, AddMember, viewMembers, deleteMember, updateMember, editMember, assignPlan, getPlanHistory } = require('../controllers/adminController')
 const { adminOnly } = require('../middleware/auth')
 
 const router = require('express').Router()
@@ -39,5 +39,11 @@ router
 router
     .route('/editMember/:id')
     .post(editMember)
+router
+    .route('/assignPlan/:id')
+    .post(assignPlan);
 
+router
+.route("/planHistory/:id")
+.get(getPlanHistory);
 module.exports = router
