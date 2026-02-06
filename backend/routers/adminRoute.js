@@ -1,4 +1,4 @@
-const { dashboard, AddMember, viewMembers, deleteMember, updateMember } = require('../controllers/adminController')
+const { dashboard, AddMember, viewMembers, deleteMember, updateMember, editMember } = require('../controllers/adminController')
 const { adminOnly } = require('../middleware/auth')
 
 const router = require('express').Router()
@@ -18,5 +18,9 @@ router
 router
     .route('/deleteMember/:id')
     .post(deleteMember)
+
+router
+    .route('/editMember/:id')
+    .post(editMember)
 
 module.exports = router
