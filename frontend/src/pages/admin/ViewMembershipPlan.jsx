@@ -12,7 +12,6 @@ const ViewMembershipPlans = () => {
 
   const navigate = useNavigate();
 
-  // Fetch plans
   const fetchPlans = async () => {
     try {
       const res = await axios.get("http://localhost:3000/api/admin/viewplan");
@@ -27,9 +26,8 @@ const ViewMembershipPlans = () => {
     fetchPlans();
   }, []);
 
-  // Delete plan
   const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this plan?")) return;
+    if (!window.confirm("Are you sure?")) return;
     try {
       await axios.post(`http://localhost:3000/api/admin/deleteplan/${id}`);
       fetchPlans();
@@ -39,9 +37,7 @@ const ViewMembershipPlans = () => {
     }
   };
 
-  const handleEdit = (id) => {
-    navigate(`/admin/editPlan/${id}`);
-  };
+  const handleEdit = (id) => navigate(`/admin/editPlan/${id}`);
 
   const openModal = (features) => {
     setModalFeatures(features);
@@ -49,11 +45,10 @@ const ViewMembershipPlans = () => {
   };
 
   const closeModal = () => {
-    setShowModal(false);
     setModalFeatures("");
+    setShowModal(false);
   };
 
-  // Filter & Search
   const filteredPlans = plans
     .filter((p) =>
       p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -61,121 +56,131 @@ const ViewMembershipPlans = () => {
       p.durationInDays.toString().includes(searchTerm)
     )
     .filter((p) =>
-      filterStatus === "all"
-        ? true
-        : filterStatus === "active"
-        ? p.isActive
-        : !p.isActive
+      filterStatus === "all" ? true : filterStatus === "active" ? p.isActive : !p.isActive
     )
     .filter((p) =>
       filterCategory === "all" ? true : p.category === filterCategory
     );
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
-      <h2 className="text-3xl font-bold mb-6">Membership Plans</h2>
+    <div className="min-h-screen bg-gradient-to-br from-[#0a0a0a] via-[#111] to-black p-8 text-gray-200">
+      <h2 className="text-3xl font-bold mb-6 tracking-wide">Membership Plans</h2>
 
-      {/* Filters */}
-      <div className="flex flex-wrap gap-4 mb-4">
+      {/* FILTERS */}
+      <div className="flex flex-wrap gap-4 mb-6">
+
+        {/* SEARCH */}
         <input
           type="text"
-          placeholder="Search here..."
+          placeholder="Search..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+          className="bg-white/5 border border-white/10 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/40 text-white"
         />
 
+        {/* STATUS DROPDOWN */}
         <select
           value={filterStatus}
           onChange={(e) => setFilterStatus(e.target.value)}
-          className="border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+          className="bg-gradient-to-b from-gray-900 to-black 
+          border border-white/10 px-4 py-2 rounded-xl 
+          focus:outline-none focus:ring-2 focus:ring-blue-500/40 
+          text-gray-200 shadow-inner hover:bg-white/10 transition"
         >
-          <option value="all">All Status</option>
-          <option value="active">Active</option>
-          <option value="inactive">Inactive</option>
+          <option className="bg-black" value="all">All Status</option>
+          <option className="bg-black" value="active">Active</option>
+          <option className="bg-black" value="inactive">Inactive</option>
         </select>
 
+        {/* CATEGORY DROPDOWN */}
         <select
           value={filterCategory}
           onChange={(e) => setFilterCategory(e.target.value)}
-          className="border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+          className="bg-gradient-to-b from-gray-900 to-black 
+          border border-white/10 px-4 py-2 rounded-xl 
+          focus:outline-none focus:ring-2 focus:ring-blue-500/40 
+          text-gray-200 shadow-inner hover:bg-white/10 transition"
         >
-          <option value="all">All Categories</option>
-          <option value="Basic">Basic</option>
-          <option value="Trial">Trial</option>
-          <option value="Premium">Premium</option>
-          <option value="Seasonal">Seasonal</option>
+          <option className="bg-black" value="all">All Categories</option>
+          <option className="bg-black" value="Basic">Basic</option>
+          <option className="bg-black" value="Trial">Trial</option>
+          <option className="bg-black" value="Premium">Premium</option>
+          <option className="bg-black" value="Seasonal">Seasonal</option>
         </select>
 
+        {/* ADD PLAN */}
         <button
           onClick={() => navigate("/admin/addPlan")}
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
+          className="px-4 py-2 rounded-full bg-orange-500/20 border border-orange-500/40 text-orange-400 hover:bg-orange-500/30 transition"
         >
           Add Plan
         </button>
       </div>
 
-      <div className="overflow-x-auto mt-4">
-        <table className="min-w-full border border-gray-300 bg-white rounded-md">
+      {/* TABLE */}
+      <div className="overflow-x-auto border border-white/10 rounded-2xl bg-white/5 backdrop-blur">
+        <table className="min-w-full">
           <thead>
-            <tr className="bg-gray-200">
-              <th className="border px-4 py-2">#</th>
-              <th className="border px-4 py-2">Name</th>
-              <th className="border px-4 py-2">Duration</th>
-              <th className="border px-4 py-2">Price</th>
-              <th className="border px-4 py-2">Category</th>
-              <th className="border px-4 py-2">Features</th>
-              <th className="border px-4 py-2">Active</th>
-              <th className="border px-4 py-2">Actions</th>
+            <tr className="bg-white/5 text-gray-400 text-sm uppercase">
+              <th className="px-6 py-4 text-left">Sl No</th>
+              <th className="px-6 py-4 text-left">Name</th>
+              <th className="px-6 py-4 text-left">Duration</th>
+              <th className="px-6 py-4 text-left">Price</th>
+              <th className="px-6 py-4 text-left">Category</th>
+              <th className="px-6 py-4 text-left">Active</th>
+              <th className="px-6 py-4 text-left">Actions</th>
             </tr>
           </thead>
+
           <tbody>
             {filteredPlans.length === 0 ? (
               <tr>
-                <td colSpan="8" className="text-center py-4">
+                <td colSpan="8" className="text-center py-6 text-gray-500">
                   No plans found
                 </td>
               </tr>
             ) : (
               filteredPlans.map((plan, index) => (
-                <tr key={plan._id} className="text-center">
-                  <td className="border px-4 py-2">{index + 1}</td>
-                  <td className="border px-4 py-2">{plan.name}</td>
-                  <td className="border px-4 py-2">{plan.durationInDays} days</td>
-                  <td className="border px-4 py-2">{plan.price}</td>
-                  <td className="border px-4 py-2">{plan.category}</td>
-                  <td className="border px-4 py-2">
-                    <button
+                <tr key={plan._id} className="border-t border-white/5 hover:bg-white/10 transition">
+                  <td className="px-6 py-4">{index + 1}</td>
+                  <td className="px-6 py-4 font-medium">{plan.name}</td>
+                  <td className="px-6 py-4">{plan.durationInDays} days</td>
+                  <td className="px-6 py-4">₹{plan.price}</td>
+                  <td className="px-6 py-4 text-gray-300">{plan.category}</td>
+                  <td className="px-6 py-4">
+                    <span
+                      className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                        plan.isActive
+                          ? "bg-green-500/20 text-green-400 border border-green-500/30"
+                          : "bg-red-500/20 text-red-400 border border-red-500/30"
+                      }`}
+                    >
+                      {plan.isActive ? "Active" : "Inactive"}
+                    </span>
+                  </td>
+
+                  <td className="px-6 py-4">
+                    <div className="flex justify-start gap-3">
+                      <button
                       onClick={() => openModal(plan.features)}
-                      className="bg-gray-200 px-2 py-1 rounded hover:bg-gray-300 transition"
+                      className="px-3 py-1 text-xs rounded-full bg-blue-500/20 text-blue-400 border border-blue-500/30 hover:bg-blue-500/30 transition"
                     >
                       View
                     </button>
-                  </td>
-                  <td className="border px-4 py-2">
-                    <span
-                      className={`px-2 py-1 rounded font-semibold ${
-                        plan.isActive
-                          ? "bg-green-200 text-green-800"
-                          : "bg-red-200 text-red-800"
-                      }`}
-                    >
-                      {plan.isActive ? "Yes" : "No"}
-                    </span>
-                  </td>
-                  <td className="border px-4 py-2 space-x-2">
-                    <button
-                      onClick={() => handleEdit(plan._id)}
-                      className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 transition"
-                    >
-                      Edit
-                    </button>
-                    <button
-                      onClick={() => handleDelete(plan._id)}
-                      className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition"
-                    >
-                      Delete
-                    </button>
+                      <button
+                        onClick={() => handleEdit(plan._id)}
+                        className="px-3 py-1 text-xs rounded-full bg-yellow-500/20 text-yellow-400 border border-yellow-500/30 hover:bg-yellow-500/30 transition"
+                      >
+                        Edit
+                      </button>
+
+                      <button
+                        onClick={() => handleDelete(plan._id)}
+                        className="px-3 py-1 text-xs rounded-full bg-red-500/20 text-red-400 border border-red-500/30 hover:bg-red-500/30 transition"
+                      >
+                        Delete
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))
@@ -184,20 +189,17 @@ const ViewMembershipPlans = () => {
         </table>
       </div>
 
-      {/* Modal */}
+      {/* MODAL */}
       {showModal && (
-        <div className="fixed inset-0  bg-opacity-40 flex justify-center items-center z-50">
-          <div className="bg-white rounded-lg shadow-2xl max-w-md w-full overflow-hidden">
-            <div className="bg-blue-500 px-6 py-3">
-              <h3 className="text-white text-lg font-bold">Plan Features</h3>
-            </div>
-            <div className="p-6">
-              <p className="text-gray-700">{modalFeatures}</p>
-            </div>
-            <div className="px-6 py-4 bg-gray-100 text-right">
+        <div className="fixed inset-0 bg-black/70 backdrop-blur flex items-center justify-center z-50">
+          <div className="bg-[#181818] border border-white/10 rounded-2xl shadow-2xl w-full max-w-lg p-6">
+            <h3 className="text-xl font-bold mb-4 text-blue-400">Plan Features</h3>
+            <p className="text-gray-300 whitespace-pre-line">{modalFeatures || "No features listed"}</p>
+
+            <div className="flex justify-end mt-6">
               <button
                 onClick={closeModal}
-                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
+                className="px-4 py-2 rounded-full bg-blue-500/20 text-blue-400 border border-blue-500/40 hover:bg-blue-500/30 transition"
               >
                 Close
               </button>
