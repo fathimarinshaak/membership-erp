@@ -61,3 +61,45 @@ exports.deleteMember=async(req,res)=>{
 }
 
 
+exports.editMember = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const {
+      name,
+      email,
+      phone,
+      whatsappNumber,
+      personalTrainer,
+      status
+    } = req.body;
+
+    if (!name || !email || !phone || !whatsappNumber) {
+      return res.json({ success: false, message: "All fields required" });
+    }
+
+    const updatedMember = await members.findByIdAndUpdate(
+      id,
+      {
+        name,
+        email,
+        phone,
+        whatsappNumber,
+        status: status || "ACTIVE",
+        personalTrainer: {
+          name: personalTrainer?.name || "",
+          phone: personalTrainer?.phone || ""
+        }
+      },
+      { new: true }
+    );
+
+    if (!updatedMember) {
+      return res.json({ success: false, message: "Member not found" });
+    }
+
+    return res.json({ success: true, member: updatedMember });
+  } catch (error) {
+    console.error("EditMember error:", error);
+    res.json({ success: false, message: "Error editing member", error });
+  }
+};

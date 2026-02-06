@@ -1,5 +1,5 @@
-const { dashboard, AddMember, viewMembers, deleteMember, updateMember } = require('../controllers/adminController')
 const { createPlan, getPlans, updatePlan, deletePlan } = require('../controllers/membershipController')
+const { dashboard, AddMember, viewMembers, deleteMember, updateMember, editMember } = require('../controllers/adminController')
 const { adminOnly } = require('../middleware/auth')
 
 const router = require('express').Router()
@@ -36,5 +36,8 @@ router
     .route('/deleteplan/:id')
     .post(deletePlan)
 
+router
+    .route('/editMember/:id')
+    .post(editMember)
 
 module.exports = router

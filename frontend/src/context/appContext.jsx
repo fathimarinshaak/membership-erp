@@ -6,26 +6,31 @@ export const appContent = createContext()
 
 export const AppContextProvider = (props) => {
     const backendUrl = import.meta.env.VITE_API_URL
+
     const [isLoggedIn, setIsLoggedIn] = useState(false)
+    const [loading, setLoading] = useState(true)
 
-    const getAuthState = async () => {
-        try {
-            const { data } = await axios.get('/api/auth/isAuth')
-            if (data.success) {
-                setIsLoggedIn(true)
+    useEffect(() => {
+        const checkAuth = async () => {
+            try {
+                const { data } = await axios.get("/api/auth/isAuth");
+                if (data.success) {
+                    setIsLoggedIn(true);
+                }
+            } catch {
+                setIsLoggedIn(false);
+            } finally {
+                setLoading(false);
             }
-        } catch (error) {
-                toast.error(error.message)
-            }
-        }
+        };
 
-    useEffect(()=>{
-        getAuthState()
-    },[])
-    
+        checkAuth();
+    }, []);
+
     const value = {
         backendUrl,
-        isLoggedIn, setIsLoggedIn
+        isLoggedIn, setIsLoggedIn,
+        loading,setLoading
     }
 
     return (

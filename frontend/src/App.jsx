@@ -14,7 +14,15 @@ import EditMembershipPlan from "./pages/admin/EditMembershipPlan";
 export default function App() {
   return (
     <>
-      <ToastContainer />
+      <ToastContainer  
+        position="bottom-center"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        pauseOnHover
+        draggable
+        theme="dark"/>
 
       <Routes>
         {/* PUBLIC */}
