@@ -1,7 +1,7 @@
 import Sidebar from "../components/admin/Sidebar";
 import { Outlet } from "react-router";
 
-const UserLayout = () => {
+const MemberLayout = () => {
   return (
     <div className="flex">
       <div className="ml-64 p-6 w-full">
@@ -11,4 +11,4 @@ const UserLayout = () => {
   );
 };
 
-export default UserLayout;
+export default MemberLayout;

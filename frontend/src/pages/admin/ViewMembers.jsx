@@ -2,6 +2,11 @@ import { useEffect, useState } from "react";
 import axios from "../../services/axios";
 import { useNavigate } from "react-router";
 
+const buildAccessLink = (member) => {
+  if (!member?.secretToken) return "";
+  return `${import.meta.env.VITE_FRONTEND_URL}/member/access/${member.secretToken}`;
+};
+
 export default function ViewMember() {
   const [members, setMembers] = useState([]);
   const [selectedMember, setSelectedMember] = useState(null);
@@ -15,6 +20,46 @@ export default function ViewMember() {
 
   const [isPlanHistoryOpen, setIsPlanHistoryOpen] = useState(false);
   const [planHistory, setPlanHistory] = useState([]);
+
+  const sendAccessLink = async () => {
+    try {
+      const res = await axios.post(
+        `/api/admin/member/send-link/${selectedMember._id}`
+      );
+
+      if (res.data.success) {
+        alert("Access link sent to member email");
+      } else {
+        alert(res.data.message || "Failed to send link");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Error sending access link");
+    }
+  };
+
+  const regenerateAccessLink = async () => {
+    try {
+      const res = await axios.post(
+        `/api/admin/member/regenerate-link/${selectedMember._id}`
+      );
+
+      if (res.data.success) {
+        setSelectedMember(res.data.member);
+        setMembers(
+          members.map((m) =>
+            m._id === res.data.member._id ? res.data.member : m
+          )
+        );
+        alert("New access link generated");
+      } else {
+        alert(res.data.message || "Failed to regenerate link");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Error regenerating access link");
+    }
+  };
 
   const [editForm, setEditForm] = useState({
     name: "",
@@ -357,6 +402,66 @@ export default function ViewMember() {
                 <p className="text-gray-500">No plan assigned</p>
               )}
             </div>
+
+            <div className="mt-4 border-t border-white/10 pt-4">
+              <h3 className="font-semibold mb-2 text-gray-200">
+                Member Access Link
+              </h3>
+
+              {/* Access Link Field */}
+              <div className="flex gap-2 items-center">
+                <input
+                  type="text"
+                  readOnly
+                  value={buildAccessLink(selectedMember)}
+                  className="flex-1 bg-black/40 border border-white/10 rounded-lg px-3 py-2 text-sm text-gray-400"
+                />
+
+                <button
+                  onClick={() => {
+                    navigator.clipboard.writeText(
+                      buildAccessLink(selectedMember)
+                    );
+                    alert("Access link copied");
+                  }}
+                  className="px-3 py-2 rounded-lg bg-blue-500/15 text-blue-400 border border-blue-500/30 hover:bg-blue-500/25"
+                >
+                  Copy
+                </button>
+              </div>
+
+              {/* Expiry */}
+              <p className="text-xs text-gray-500 mt-2">
+                Expires at:{" "}
+                {selectedMember.expiresAt
+                  ? new Date(selectedMember.expiresAt).toLocaleString()
+                  : "Not generated"}
+              </p>
+
+              {/* Buttons */}
+              <div className="flex gap-3 mt-3">
+                <button
+                  onClick={sendAccessLink}
+                  className="px-4 py-2 rounded-full text-sm font-semibold
+        bg-green-500/15 text-green-400
+        border border-green-500/30
+        hover:bg-green-500/25"
+                >
+                  Send Link
+                </button>
+
+                <button
+                  onClick={regenerateAccessLink}
+                  className="px-4 py-2 rounded-full text-sm font-semibold
+        bg-orange-500/15 text-orange-400
+        border border-orange-500/30
+        hover:bg-orange-500/25"
+                >
+                  Regenerate Link
+                </button>
+              </div>
+            </div>
+
 
             {/* CURRENT PLAN DISPLAY */}
             {/* {selectedMember.currentPlan && (
