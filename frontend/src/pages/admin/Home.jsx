@@ -4,24 +4,43 @@ const Home = () => {
   const navigate = useNavigate();
 
   return (
-    <div>
-      <h1 className="text-2xl font-bold mb-4 hover:text-blue-600 transition-colors duration-300">
-        Admin Home
-      </h1>
+    <div className="flex items-center justify-center min-h-[80vh]">
+      <div className="w-full max-w-3xl">
+        
+        <h1 className="text-4xl font-bold text-gray-100 mb-12 text-center tracking-wide">
+          Admin Dashboard
+        </h1>
 
-      <button
-        onClick={() => navigate("/admin/addMember")}
-        className="bg-blue-600 text-white px-4 py-2 rounded mr-3 hover:bg-blue-700 transition-colors duration-300"
-      >
-        Add Member
-      </button>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          
+          {/* ADD MEMBER CARD */}
+          <div
+            onClick={() => navigate("/admin/addMember")}
+            className="cursor-pointer backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl p-10 text-center shadow-xl hover:bg-white/10 transition"
+          >
+            <h2 className="text-2xl font-semibold text-blue-400 mb-4">
+              Add Member
+            </h2>
+            <p className="text-gray-400">
+              Register a new gym member and assign details
+            </p>
+          </div>
 
-      <button
-        onClick={() => navigate("/admin/viewMember")}
-        className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition-colors duration-300"
-      >
-        View Members
-      </button>
+          {/* VIEW MEMBERS CARD */}
+          <div
+            onClick={() => navigate("/admin/viewMember")}
+            className="cursor-pointer backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl p-10 text-center shadow-xl hover:bg-white/10 transition"
+          >
+            <h2 className="text-2xl font-semibold text-green-400 mb-4">
+              View Members
+            </h2>
+            <p className="text-gray-400">
+              Manage, edit and track all registered members
+            </p>
+          </div>
+
+        </div>
+      </div>
     </div>
   );
 };
