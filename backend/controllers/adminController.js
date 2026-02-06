@@ -1,4 +1,6 @@
 const members = require('../model/Member')
+const sendMail = require('../utils/nodemailer')
+
 const Plan = require('../model/MembershipPlan')
 const Membership = require('../model/Membership')
 exports.dashboard = (req, res) => {
@@ -29,8 +31,9 @@ exports.AddMember = async (req, res) => {
         name: personalTrainer?.name || "",
         phone: personalTrainer?.phone || ""
       },
-      expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
     });
+    const accessLink = `${process.env.CLIENT_URL}/api/member/auth/${member.secretToken}`;
+    await sendMail(member.email, accessLink);
     return res.status(201).json({ success: true, member });
   } catch (error) {
     console.error("AddMember error:", error);

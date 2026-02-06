@@ -1,21 +1,59 @@
 import { NavLink, useNavigate } from "react-router";
+import { toast } from "react-toastify";
+import axios from "../../services/axios";
+import { useContext } from "react";
+import { appContent } from "../../context/appContext";
 
 const Sidebar = () => {
   const navigate = useNavigate();
+  const { setAdminLoggedIn } = useContext(appContent)
 
-  const handleLogout =async () => {
+  const doLogout = async () => {
     try {
-      e.preventDefault()
       const { data } = await axios.post('/api/auth/logout')
       if (!data.success) {
         toast.error(data.msg)
         return;
       }
-      setIsLoggedIn(false)
+      setAdminLoggedIn(false)
       navigate('/admin/login')
     } catch (error) {
-      toast.error(error.message)
+      toast.error("admin logout failed!")
+      console.log(error)
     }
+  };
+
+  const handleLogout = () => {
+    toast.info(
+      ({ closeToast }) => (
+        <div>
+          <p className="font-semibold">Confirm logout</p>
+          <p className="text-sm opacity-80">
+            You will be signed out of the admin panel.
+          </p>
+
+          <div className="flex gap-3 mt-3">
+            <button
+              onClick={() => {
+                doLogout();
+                closeToast();
+              }}
+              className="bg-red-600 text-white px-3 py-1 rounded"
+            >
+              Logout
+            </button>
+
+            <button
+              onClick={closeToast}
+              className="bg-gray-600 text-white px-3 py-1 rounded"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      ),
+      { autoClose: false, position: "top-center" }
+    );
   };
 
   return (

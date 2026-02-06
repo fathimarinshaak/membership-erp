@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 
 const AdminLogin = () => {
   const navigate = useNavigate()
-  const {backendUrl,isLoggedIn,setIsLoggedIn} = useContext(appContent)
+  const {setAdminLoggedIn} = useContext(appContent)
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [backenddata, setbackenddata] = useState("")
@@ -22,7 +22,7 @@ const AdminLogin = () => {
         setbackenddata(data.msg)
         return;
       }
-      setIsLoggedIn(true)
+      setAdminLoggedIn(true)
       navigate('/admin')
     } catch (error) {
       toast.error(error.message)

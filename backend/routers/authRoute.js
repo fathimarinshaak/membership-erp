@@ -12,7 +12,7 @@ router
     .post(adminLogout)
 
 router
-    .route('/isAuth')
+    .route('/isAdminAuth')
     .get(adminOnly,isAuthenticated)
 
 module.exports = router

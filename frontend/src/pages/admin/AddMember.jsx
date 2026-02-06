@@ -1,5 +1,6 @@
 import { useState } from "react";
 import axios from "../../services/axios";
+import { toast } from "react-toastify";
 
 export default function AddMember() {
   const [form, setForm] = useState({
@@ -34,28 +35,30 @@ export default function AddMember() {
       status: form.status,
     };
 
-    console.log("Submitting Member:", memberData);
-
     try {
-      const res = await axios.post("/api/admin/addMember", memberData);
-      console.log("Member saved:", res.data);
-      alert("Member added successfully!");
+    const res = await axios.post("/api/admin/addMember", memberData);
 
-      // Reset form
-      setForm({
-        name: "",
-        email: "",
-        phone: "",
-        whatsappNumber: "",
-        personalTrainerName: "",
-        personalTrainerPhone: "",
-        status: "ACTIVE",
-      });
-    } catch (err) {
-      console.error("Error adding member:", err);
-      alert("Failed to add member");
-    }
-  };
+    toast.success("member added successfully!")
+    toast.info(`access link send to ${form.name}`)
+
+    // Reset form
+    setForm({
+      name: "",
+      email: "",
+      phone: "",
+      whatsappNumber: "",
+      personalTrainerName: "",
+      personalTrainerPhone: "",
+      status: "ACTIVE",
+    });
+
+  } catch (err) {
+    console.error("Error adding member:", err);
+    alert("Failed to add member");
+  }
+};
+    // TODO: axios.post("/api/members", memberData)
+  
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#0f0f0f] via-[#121212] to-black flex items-center justify-center p-8">
