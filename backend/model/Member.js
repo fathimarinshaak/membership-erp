@@ -41,6 +41,7 @@ const memberSchema = new mongoose.Schema({
 memberSchema.pre('save', function() {
   if (!this.secretToken) {
     this.secretToken = crypto.randomBytes(32).toString('hex');
+    this.expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
   }
 //   next();
 });

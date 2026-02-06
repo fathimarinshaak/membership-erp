@@ -1,4 +1,5 @@
 const Admin = require('../model/Admin')
+const jwt = require('jsonwebtoken')
 
 exports.adminLogin = async (req, res) => {
     const { email, password } = req.body
@@ -50,3 +51,45 @@ exports.isAuthenticated = (req,res)=>{
         return res.json({success:false , msg:error.message})
     }
 }
+
+exports.authenticateMember = async (req, res) => {
+  try {
+    const { token } = req.params;
+
+    const member = await Member.findOne({
+      secretToken: token,
+      expiresAt: { $gt: new Date() },
+      status: 'ACTIVE'
+    });
+
+    if (!member) {
+      return res.status(401).json({ message: 'Invalid or expired link' });
+    }
+
+    // invalidate token
+    member.secretToken = null;
+    member.expiresAt = null;
+    await member.save();
+
+    const jwtToken = jwt.sign(
+      { id: member._id, role: 'MEMBER' },
+      process.env.JWT_SECRET,
+      { expiresIn: '7d' }
+    );
+
+    res.cookie('member_token', jwtToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 7 * 24 * 60 * 60 * 1000
+    });
+
+    res.json({
+      success: true,
+      message: 'Login successful'
+    });
+
+  } catch (err) {
+    res.status(500).json({ message: 'Authentication failed' });
+  }
+};

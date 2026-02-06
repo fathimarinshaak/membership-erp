@@ -1,5 +1,6 @@
 import { useState } from "react";
 import axios from "../../services/axios";
+import { toast } from "react-toastify";
 
 export default  function AddMember() {
   const [form, setForm] = useState({
@@ -34,14 +35,11 @@ export default  function AddMember() {
       status: form.status,
     };
 
-    
-    console.log("Submitting Member:", memberData);
-
     try {
     const res = await axios.post("/api/admin/addMember", memberData);
 
-    console.log("Member saved:", res.data);
-    alert("Member added successfully!");
+    toast.success("member added successfully!")
+    toast.info(`access link send to ${form.name}`)
 
     // Reset form
     setForm({
