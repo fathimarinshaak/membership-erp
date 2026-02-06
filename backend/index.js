@@ -18,9 +18,11 @@ app.use(cors({
 
 const authRouter = require('./routers/authRoute')
 const adminRouter = require('./routers/adminRoute')
+const memberRouter = require('./routers/memberRoute')
 
 app.use('/api/auth', authRouter)
 app.use('/api/admin', adminRouter)
+app.use('/api/member', memberRouter)
 
 const port = process.env.PORT || 5000;
 

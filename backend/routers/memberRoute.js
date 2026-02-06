@@ -1,10 +1,9 @@
-const { dashboard } = require('../controllers/memberController')
-const { memberOnly } = require('../middleware/auth')
+const { dashboard } = require('../controllers/adminController')
 
 const router = require('express').Router()
-
 router
     .route('/dashboard')
-    .get(memberOnly, dashboard)
+    .get(dashboard)
+
 
 module.exports = router

@@ -1,12 +1,16 @@
-const members = require('../model/Member')
-const sendMail = require('../utils/nodemailer')
+const members = require("../model/Member");
+const crypto = require("crypto");
+const sendMail = require("../utils/nodemailer");
 
-const Plan = require('../model/MembershipPlan')
-const Membership = require('../model/Membership')
+const Plan = require("../model/MembershipPlan");
+const Membership = require("../model/Membership");
+
+/* ---------------- DASHBOARD ---------------- */
 exports.dashboard = (req, res) => {
-  return res.json({ msg: "dashboard" })
-}
+  res.json({ msg: "dashboard" });
+};
 
+/* ---------------- ADD MEMBER ---------------- */
 exports.AddMember = async (req, res) => {
   try {
     const {
@@ -21,42 +25,34 @@ exports.AddMember = async (req, res) => {
     if (!name || !email || !phone || !whatsappNumber) {
       return res.json({ success: false, message: "All fields required" });
     }
+
     const member = await members.create({
       name,
       email,
       phone,
       whatsappNumber,
       status: status || "ACTIVE",
-      personalTrainer: {
-        name: personalTrainer?.name || "",
-        phone: personalTrainer?.phone || ""
-      },
+      personalTrainer,
+      secretToken: crypto.randomBytes(32).toString("hex"),
+      expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
     });
-    const accessLink = `${process.env.CLIENT_URL}/api/member/auth/${member.secretToken}`;
+
+    const accessLink = `${process.env.CLIENT_URL}/member/access/${member.secretToken}`;
+
     await sendMail(member.email, accessLink);
-    return res.status(201).json({ success: true, member });
+
+    res.status(201).json({ success: true, member });
   } catch (error) {
     console.error("AddMember error:", error);
-    res.status(500).json({ success: false, message: "Error adding member", error });
+    res.status(500).json({ success: false });
   }
 };
 
-// exports.viewMembers=async (req,res)=>{
-//   try{
-//       const allMembers= await members.find()
-//       return res.json(allMembers)
-//   }catch(error){
-//     console.error("Fetch Members error:", error);
-//     return res.json({success:false,message:error.message})
-//   }
-// }
-
-
+/* ---------------- VIEW MEMBERS ---------------- */
 exports.viewMembers = async (req, res) => {
   try {
     const allMembers = await members.find();
 
-    // Attach latest plan for each member
     const membersWithPlan = await Promise.all(
       allMembers.map(async (m) => {
         const latest = await Membership.findOne({ memberId: m._id })
@@ -65,39 +61,39 @@ exports.viewMembers = async (req, res) => {
 
         return {
           ...m.toObject(),
-          latestPlan: latest ? {
-            name: latest.planId.name,
-            durationInDays: latest.planId.durationInDays,
-            price: latest.planId.price,
-            assignedAt: latest.startDate,
-            expiresAt: latest.endDate
-          } : null
+          latestPlan: latest
+            ? {
+                name: latest.planId.name,
+                durationInDays: latest.planId.durationInDays,
+                price: latest.planId.price,
+                assignedAt: latest.startDate,
+                expiresAt: latest.endDate
+              }
+            : null
         };
       })
     );
 
-    return res.json(membersWithPlan);
+    res.json(membersWithPlan);
   } catch (error) {
-    console.error("Fetch Members error:", error);
-    return res.json({ success: false, message: error.message });
+    console.error(error);
+    res.json({ success: false });
   }
 };
 
+exports.deleteMember=async(req,res)=>{
+  try{
+    const{id}=req.params
+  const member=await members.findByIdAndDelete(id)
 
-exports.deleteMember = async (req, res) => {
-  try {
-    const { id } = req.params
-    const member = await members.findByIdAndDelete(id)
-
-    if (!member) {
-      return res.json({ success: false, message: 'not found' })
-    }
-    return res.json({ success: true, message: 'deleted successfully' })
-  } catch (error) {
-    res.json({ success: false, message: 'error deleting member', error })
+  if(!member){
+    return res.json({success:false,message:'not found'})
+  }
+  return res.json({success:true,message:'deleted successfully'})
+  }catch(error){
+ res.json({success:false,message:'error deleting member',error})
   }
 }
-
 
 exports.editMember = async (req, res) => {
   try {
@@ -178,5 +174,48 @@ exports.getPlanHistory = async (req, res) => {
   } catch (error) {
     console.error("Plan History Error:", error);
     res.json({ success: false });
+  }
+};
+
+/* ---------------- SEND LINK AGAIN ---------------- */
+exports.sendMemberLink = async (req, res) => {
+  try {
+    const member = await members.findById(req.params.id);
+    if (!member) return res.json({ success: false });
+
+    // auto regenerate if expired
+    if (!member.secretToken || member.expiresAt < new Date()) {
+      member.secretToken = crypto.randomBytes(32).toString("hex");
+      member.expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+      await member.save();
+    }
+
+    const link = `${process.env.CLIENT_URL}/member/access/${member.secretToken}`;
+    await sendMail(member.email, link);
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false });
+  }
+};
+
+/* ---------------- REGENERATE LINK ---------------- */
+exports.regenerateLink = async (req, res) => {
+  try {
+    const member = await members.findById(req.params.id);
+    if (!member) return res.json({ success: false });
+
+    member.secretToken = crypto.randomBytes(32).toString("hex");
+    member.expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+
+    await member.save();
+
+    res.json({
+      success: true,
+      link: `${process.env.CLIENT_URL}/member/access/${member.secretToken}`
+    });
+  } catch (err) {
+    res.status(500).json({ success: false });
   }
 };
