@@ -7,6 +7,9 @@ import { Route, Routes } from "react-router";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import AdminGuard from "./guards/adminguard";
+import AddMembershipPlan from "./pages/admin/AddMembershipPlan";
+import ViewMembershipPlans from "./pages/admin/ViewMembershipPlan";
+import EditMembershipPlan from "./pages/admin/EditMembershipPlan";
 
 export default function App() {
   return (
@@ -31,6 +34,10 @@ export default function App() {
             <Route index element={<Home />} />
             <Route path="addMember" element={<AddMember />} />
             <Route path="viewMember" element={<ViewMember />} />
+            <Route path="addPlan" element={<AddMembershipPlan />} />
+            <Route path="viewPlan" element={<ViewMembershipPlans />} />
+            <Route path="editPlan/:id" element={<EditMembershipPlan />} />
+
           </Route>
         </Route>
       </Routes>

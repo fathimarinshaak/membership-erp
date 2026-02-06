@@ -42,7 +42,7 @@ const Sidebar = () => {
         </li>
         <li>
           <NavLink
-            to="/admin/plans"
+            to="/admin/viewplan"
             className="hover:text-blue-500 transition-colors duration-300"
           >
             Membership Plans
