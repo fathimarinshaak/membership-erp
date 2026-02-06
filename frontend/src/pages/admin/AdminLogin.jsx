@@ -18,14 +18,14 @@ const AdminLogin = () => {
         {email,password}
       )
       if(!data.success){
+        toast.error(data.error)
         setbackenddata(data.msg)
         return;
       }
-      console.log(data.msg)
       setIsLoggedIn(true)
       navigate('/admin')
     } catch (error) {
-      console.log(error.message)
+      toast.error(error.message)
     }
   }
 

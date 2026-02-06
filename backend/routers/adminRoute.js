@@ -1,3 +1,4 @@
+const { createPlan, getPlans, updatePlan, deletePlan } = require('../controllers/membershipController')
 const { dashboard, AddMember, viewMembers, deleteMember, updateMember, editMember } = require('../controllers/adminController')
 const { adminOnly } = require('../middleware/auth')
 
@@ -18,6 +19,22 @@ router
 router
     .route('/deleteMember/:id')
     .post(deleteMember)
+
+router
+    .route('/addplan')
+    .post(createPlan)
+
+router
+    .route('/viewplan')
+    .get(getPlans)
+
+router
+    .route('/updateplan/:id')
+    .post(updatePlan)
+
+router
+    .route('/deleteplan/:id')
+    .post(deletePlan)
 
 router
     .route('/editMember/:id')

@@ -13,6 +13,15 @@ const membershipPlanSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
+    category: {
+    type: String,
+    enum: ["Basic", "Trial", "Premium", "Seasonal"],
+    default: "Basic"
+    },
+    features:{
+        type :String,
+        required: true
+    },
     isActive: {
         type: Boolean,
         default: true
