@@ -14,6 +14,8 @@ import AddMember from "./pages/admin/AddMember";
 import MemberLayout from "./layouts/MemberLayout";
 import MemberHome from "./pages/member/MemberHome";
 import MemberAccess from "./pages/member/MemberAccess";
+import PaymentHistory from "./pages/member/PaymentHistory";
+import MembershipHistory from "./pages/member/MembershipHistory";
 
 export default function App() {
   return (
@@ -47,6 +49,8 @@ export default function App() {
 
         <Route path="/member/access/:token" element={<MemberLayout />}>
           <Route index element={<MemberHome />} />
+          <Route path="payments" element={<PaymentHistory />} />
+          <Route path="memberships" element={<MembershipHistory />} />
         </Route>
 
       </Routes>

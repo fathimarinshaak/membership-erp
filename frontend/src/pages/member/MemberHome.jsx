@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import axios from "../../services/axios";
 import { toast } from "react-toastify";
 
 const MemberHome = () => {
+  const navigate = useNavigate()
   const { token } = useParams();
   const [data, setData] = useState(null);
 
@@ -13,61 +14,13 @@ const MemberHome = () => {
     axios
       .get(`api/member/dashboard/${token}`)
       .then(res => setData(res.data))
-      .catch(err => console.error("Error loading dashboard", err));
+      .catch(err => toast.error("Error loading dashboard"));
   }, [token]);
 
   if (!data) return <div className="text-white p-6">Loading...</div>;
 
-  const { member, currentPlan, invoices } = data;
+  const { member, currentPlan } = data;
   const planActive = currentPlan?.status === "ACTIVE";
-
-
- const payInvoice = async (invoice) => {
-  try {
-    const { data } = await axios.post("/api/member/payment/create-order", {
-      invoiceId: invoice._id
-    });
-
-    if (!data.success) {
-      toast.error(data.message || "Order failed");
-      return;
-    }
-
-    const options = {
-      key: import.meta.env.VITE_RAZORPAY_API_KEY,
-      order_id: data.orderId,     // ✅ FIXED
-      amount: data.amount,        // ✅ FIXED
-      currency: "INR",
-      name: "Membership Payment",
-      description: invoice.invoiceNumber,
-
-      handler: async (response) => {
-        try {
-          await axios.post("/api/member/payment/verify", {
-            invoiceId: invoice._id,
-            paymentId: data.paymentId,
-            razorpay_order_id: response.razorpay_order_id,
-            razorpay_payment_id: response.razorpay_payment_id,
-            razorpay_signature: response.razorpay_signature
-          });
-
-          toast.success("Payment successful 🎉");
-          window.location.reload();
-        } catch (err) {
-          toast.error("Payment verification failed");
-        }
-      }
-    };
-
-    new window.Razorpay(options).open();
-
-  } catch (err) {
-    console.error(err);
-    toast.error("Payment failed");
-  }
-};
-
-
 
   return (
     <div className="min-h-screen w-full 
@@ -144,88 +97,42 @@ to-[#2b2a28]
           )}
         </div>
 
-        {/* PAYMENT HISTORY TABLE */}
-        <div className="mt-10 backdrop-blur-2xl bg-white/10 border border-white/10 
-                      p-6 rounded-2xl shadow-xl
-                      hover:bg-white/15 transition duration-300 ease-out">
+        <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-6">
 
-          <h2 className="text-xl font-semibold mb-4  text-[#f2edea] border-b border-white/20 pb-2">
-            Payment History
-          </h2>
+  {/* PAYMENT HISTORY BUTTON */}
+  <div
+    onClick={() => navigate(`/member/access/${token}/payments`)}
+    className="cursor-pointer backdrop-blur-2xl bg-white/10 border border-white/10 
+               p-6 rounded-2xl shadow-xl
+               hover:bg-white/20 hover:scale-[1.02]
+               transition-all duration-300 text-center"
+  >
+    <h2 className="text-xl font-semibold text-[#f2edea]">
+      💳 Payment History
+    </h2>
+    <p className="text-gray-300 mt-2">
+      View & pay pending invoices
+    </p>
+  </div>
 
-          <table className="w-full text-left text-gray-200">
-            <thead>
-              <tr className="text-[#e7d8cb] border-b border-white/20">
-                <th className="py-2">Date</th>
-                <th className="py-2">Plan</th>
-                <th className="py-2">Amount</th>
-                <th className="py-2">Status</th>
-                <th className="py-2">Pay</th>
-                <th className="py-2">Invoice</th>
-              </tr>
-            </thead>
+  {/* MEMBERSHIP HISTORY BUTTON */}
+  <div
+    onClick={() => navigate(`/member/access/${token}/memberships`)}
+    className="cursor-pointer backdrop-blur-2xl bg-white/10 border border-white/10 
+               p-6 rounded-2xl shadow-xl
+               hover:bg-white/20 hover:scale-[1.02]
+               transition-all duration-300 text-center"
+  >
+    <h2 className="text-xl font-semibold text-[#f2edea]">
+      📜 Membership History
+    </h2>
+    <p className="text-gray-300 mt-2">
+      View past & expired memberships
+    </p>
+  </div>
 
-            <tbody className="divide-y divide-white/10">
-              {invoices.length === 0 ? (
-                <tr>
-                  <td colSpan="5" className="py-6 text-center text-gray-400">
-                    No invoices found
-                  </td>
-                </tr>
-              ) : (
-                invoices.map((invoice) => (
-                  <tr key={invoice._id} className="hover:bg-white/10 transition">
-                    <td className="py-2">
-                      {new Date(invoice.createdAt).toLocaleDateString()}
-                    </td>
+</div>
 
-                    <td>
-                      {invoice.membershipId?.planId?.name || "—"}
-                    </td>
-
-                    <td>₹{invoice.amount}</td>
-
-                    <td
-                      className={`font-semibold ${invoice.status === "PAID"
-                        ? "text-green-400"
-                        : "text-yellow-400"
-                        }`}
-                    >
-                      {invoice.status}
-                    </td>
-
-                    <td>
-                      {invoice.status === "PAID" ? (
-                        <button
-                          disabled
-                          className="px-3 py-1 text-xs rounded-full
-                 bg-gray-500/20 text-gray-400
-                 cursor-not-allowed"
-                        >
-                          Paid
-                        </button>
-                      ) : (
-                        <button
-                          onClick={() => payInvoice(invoice)}
-                          className="px-3 py-1 text-xs rounded-full
-                 bg-blue-500/20 text-blue-400
-                 hover:bg-blue-500/30"
-                        >
-                          Pay Now
-                        </button>
-                      )}
-                    </td>
-
-                    <td>
-                      *invoice*
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-
-          </table>
-        </div>
       </div>
     </div>
   );
