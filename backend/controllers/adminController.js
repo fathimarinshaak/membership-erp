@@ -3,6 +3,8 @@ const sendMail = require('../utils/nodemailer')
 const Plan = require('../model/MembershipPlan')
 const Membership = require('../model/Membership')
 const crypto = require('crypto')
+const { accessLinkTemplate } = require('../utils/mailtemplates')
+
 exports.dashboard = (req, res) => {
   return res.json({ msg: "dashboard" })
 }
@@ -44,7 +46,9 @@ exports.AddMember = async (req, res) => {
     });
 
     const accessLink = `${process.env.CLIENT_URL}/member/access/${member.secretToken}`;
-    await sendMail(member.email, accessLink);
+    
+    const mail = accessLinkTemplate(accessLink);
+    await sendMail(member.email, mail.subject, mail.html);
 
     return res.status(201).json({ success: true, member });
 
@@ -206,7 +210,8 @@ exports.sendMemberLink = async (req, res) => {
     }
 
     const link = `${process.env.CLIENT_URL}/member/access/${member.secretToken}`;
-    await sendMail(member.email, link);
+    const mail = accessLinkTemplate(link);
+    await sendMail(member.email, mail.subject, mail.html);
 
     res.json({ success: true });
   } catch (err) {
@@ -229,8 +234,8 @@ exports.regenerateLink = async (req, res) => {
 
     const link = `${process.env.CLIENT_URL}/member/access/${member.secretToken}`;
 
-    // ✅ Send email
-    await sendMail(member.email, link);
+    const mail = accessLinkTemplate(link);
+    await sendMail(member.email, mail.subject, mail.html);
 
     res.json({
       success: true,
