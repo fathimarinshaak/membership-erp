@@ -33,7 +33,7 @@ const AdminLogin = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700">
 
-      {/* Card */}
+      
       <div className="w-full max-w-md p-8 rounded-2xl bg-white/20 backdrop-blur-xl border border-white/30 shadow-2xl">
 
         <h1 className="text-3xl font-bold text-white text-center mb-6">

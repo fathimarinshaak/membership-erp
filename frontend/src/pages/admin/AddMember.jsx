@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router";
 
 export default function AddMember() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -52,21 +52,24 @@ export default function AddMember() {
         toast.error("Failed to add member");
       }
     }
-
-
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0f0f0f] via-[#121212] to-black flex items-center justify-center p-8">
-      {/* Glass Container */}
-      <div className="w-full max-w-3xl backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl shadow-2xl p-10">
-        <h2 className="text-3xl font-bold text-gray-100 mb-8 text-center">
+    <div className="min-h-screen bg-gradient-to-br from-[#0f0f0f] via-[#121212] to-black flex flex-col items-center p-4 sm:p-8">
+      <div className="w-full max-w-3xl backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl shadow-2xl p-4 sm:p-10">
+        <button
+          onClick={() => navigate(-1)}
+          className="self-start mb-4 flex items-center gap-2 text-white px-4 py-2  transition"
+        >
+          ←
+        </button>
+        <h2 className="text-3xl font-bold text-gray-100 mb-6 sm:mb-8 text-center">
           Add New Member
         </h2>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Basic Info */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+        
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
             <div>
               <label className="block text-gray-400 mb-1">Full Name</label>
               <input
@@ -76,7 +79,7 @@ export default function AddMember() {
                 onChange={handleChange}
                 placeholder="Enter full name"
                 required
-                className="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-2 text-gray-200 placeholder-gray-500 focus:ring-2 focus:ring-orange-500 focus:outline-none"
+                className="w-full bg-black/30 border border-white/10 rounded-xl px-3 py-2 text-gray-200 placeholder-gray-500 focus:ring-2 focus:ring-orange-500 focus:outline-none"
               />
             </div>
 
@@ -89,12 +92,12 @@ export default function AddMember() {
                 onChange={handleChange}
                 placeholder="john@example.com"
                 required
-                className="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-2 text-gray-200 placeholder-gray-500 focus:ring-2 focus:ring-orange-500 focus:outline-none"
+                className="w-full bg-black/30 border border-white/10 rounded-xl px-3 py-2 text-gray-200 placeholder-gray-500 focus:ring-2 focus:ring-orange-500 focus:outline-none"
               />
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
             <div>
               <label className="block text-gray-400 mb-1">Phone Number</label>
               <input
@@ -104,7 +107,7 @@ export default function AddMember() {
                 onChange={handleChange}
                 placeholder="Phone number"
                 required
-                className="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-2 text-gray-200 placeholder-gray-500 focus:ring-2 focus:ring-orange-500 focus:outline-none"
+                className="w-full bg-black/30 border border-white/10 rounded-xl px-3 py-2 text-gray-200 placeholder-gray-500 focus:ring-2 focus:ring-orange-500 focus:outline-none"
               />
             </div>
 
@@ -117,18 +120,18 @@ export default function AddMember() {
                 onChange={handleChange}
                 placeholder="WhatsApp number"
                 required
-                className="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-2 text-gray-200 placeholder-gray-500 focus:ring-2 focus:ring-orange-500 focus:outline-none"
+                className="w-full bg-black/30 border border-white/10 rounded-xl px-3 py-2 text-gray-200 placeholder-gray-500 focus:ring-2 focus:ring-orange-500 focus:outline-none"
               />
             </div>
           </div>
 
-          {/* Personal Trainer Info */}
-          <div className="border-t border-white/10 pt-6">
-            <h3 className="text-xl font-semibold text-gray-100 mb-4">
+        
+          <div className="border-t border-white/10 pt-4 sm:pt-6">
+            <h3 className="text-xl font-semibold text-gray-100 mb-3 sm:mb-4">
               Personal Trainer
             </h3>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
               <div>
                 <label className="block text-gray-400 mb-1">Trainer Name</label>
                 <input
@@ -137,7 +140,7 @@ export default function AddMember() {
                   value={form.personalTrainerName}
                   onChange={handleChange}
                   placeholder="Trainer full name"
-                  className="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-2 text-gray-200 placeholder-gray-500 focus:ring-2 focus:ring-orange-500 focus:outline-none"
+                  className="w-full bg-black/30 border border-white/10 rounded-xl px-3 py-2 text-gray-200 placeholder-gray-500 focus:ring-2 focus:ring-orange-500 focus:outline-none"
                 />
               </div>
 
@@ -149,27 +152,25 @@ export default function AddMember() {
                   value={form.personalTrainerPhone}
                   onChange={handleChange}
                   placeholder="Phone number"
-                  className="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-2 text-gray-200 placeholder-gray-500 focus:ring-2 focus:ring-orange-500 focus:outline-none"
+                  className="w-full bg-black/30 border border-white/10 rounded-xl px-3 py-2 text-gray-200 placeholder-gray-500 focus:ring-2 focus:ring-orange-500 focus:outline-none"
                 />
               </div>
             </div>
           </div>
 
-          {/* Status */}
           <div>
             <label className="block text-gray-400 mb-1">Status</label>
             <select
               name="status"
               value={form.status}
               onChange={handleChange}
-              className="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-2 text-gray-200 focus:ring-2 focus:ring-orange-500 focus:outline-none"
+              className="w-full bg-black/30 border border-white/10 rounded-xl px-3 py-2 text-gray-200 focus:ring-2 focus:ring-orange-500 focus:outline-none"
             >
               <option value="ACTIVE">Active</option>
               <option value="INACTIVE">Inactive</option>
             </select>
           </div>
 
-          {/* Submit Button */}
           <button
             type="submit"
             className="w-full text-white py-2 px-6 rounded-full text-sm font-semibold transition 
@@ -178,7 +179,6 @@ export default function AddMember() {
           >
             Add Member
           </button>
-
         </form>
       </div>
     </div>
