@@ -6,7 +6,7 @@ import { appContent } from "../../context/appContext";
 
 const Sidebar = () => {
   const navigate = useNavigate();
-  const { setAdminLoggedIn } = useContext(appContent)
+  const { setIsLoggedIn } = useContext(appContent)
 
   const doLogout = async () => {
     try {
@@ -15,7 +15,7 @@ const Sidebar = () => {
         toast.error(data.msg)
         return;
       }
-      setAdminLoggedIn(false)
+      setIsLoggedIn(false)
       navigate('/admin/login')
     } catch (error) {
       toast.error("admin logout failed!")

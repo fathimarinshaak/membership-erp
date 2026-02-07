@@ -13,7 +13,7 @@ export const AppContextProvider = (props) => {
     useEffect(() => {
         const checkAuth = async () => {
             try {
-                const { data } = await axios.get("/api/auth/isAuth");
+                const { data } = await axios.get("/api/auth/isAdminAuth");
                 if (data.success) {
                     setIsLoggedIn(true);
                 }

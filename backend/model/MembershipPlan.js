@@ -19,7 +19,7 @@ const membershipPlanSchema = new mongoose.Schema({
     default: "Basic"
     },
     features:{
-        type :String,
+        type :[String],
         required: true
     },
     isActive: {

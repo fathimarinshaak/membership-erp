@@ -17,7 +17,7 @@ module.exports = async (to, link) => {
       <h3>Welcome to ERP</h3>
       <p>Click below to access your account:</p>
       <a href="${link}">${link}</a>
-      <p>This link expires in 15 minutes.</p>
+      <p>This link expires in 30 days.</p>
     `
   });
 };

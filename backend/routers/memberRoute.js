@@ -3,8 +3,8 @@ const {userDashboard } = require('../controllers/memberController')
 
 const router = require('express').Router()
 
-router.get("/dashboard/:token", userDashboard);
-
-
+router
+    .route("/dashboard/:token")    
+    .get(userDashboard);
 
 module.exports = router

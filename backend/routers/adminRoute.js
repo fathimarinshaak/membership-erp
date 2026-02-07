@@ -1,6 +1,7 @@
 const { createPlan, getPlans, updatePlan, deletePlan } = require('../controllers/membershipController')
-const { dashboard, AddMember, viewMembers, deleteMember, updateMember, editMember, assignPlan, getPlanHistory, sendMemberLink, regenerateLink } = require('../controllers/adminController')
+const { dashboard, AddMember, viewMembers, deleteMember, editMember, assignPlan, getPlanHistory, sendMemberLink, regenerateLink } = require('../controllers/adminController')
 const { adminOnly } = require('../middleware/auth')
+const { getInvoicesByMember, paymentSuccess } = require('../controllers/invoiceController')
 
 const router = require('express').Router()
 
@@ -10,45 +11,54 @@ router
 
 router
     .route('/addMember')
-    .post(AddMember)
+    .post(adminOnly, AddMember)
 
 router
     .route('/viewMembers')
-    .get(viewMembers)
+    .get(adminOnly, viewMembers)
 
 router
     .route('/deleteMember/:id')
-    .post(deleteMember)
+    .post(adminOnly, deleteMember)
 
 router
     .route('/addplan')
-    .post(createPlan)
+    .post(adminOnly, createPlan)
 
 router
     .route('/viewplan')
-    .get(getPlans)
+    .get(adminOnly, getPlans)
 
 router
     .route('/updateplan/:id')
-    .post(updatePlan)
+    .post(adminOnly, updatePlan)
 
 router
     .route('/deleteplan/:id')
-    .post(deletePlan)
+    .post(adminOnly, deletePlan)
 
 router
     .route('/editMember/:id')
-    .post(editMember)
+    .post(adminOnly, editMember)
+    
 router
     .route('/assignPlan/:id')
-    .post(assignPlan);
+    .post(adminOnly, assignPlan);
 
 router
-.route("/planHistory/:id")
-.get(getPlanHistory);
+    .route("/planHistory/:id")
+    .get(adminOnly, getPlanHistory);
 
+router
+    .route('/member/:memberId/invoices')
+    .get(adminOnly, getInvoicesByMember)
+   
+router
+    .route("/member/send-link/:id")
+    .post(adminOnly, sendMemberLink)
 
-router.post("/member/send-link/:id", sendMemberLink);
+router
+    .route("/member/regenerate-link/:id")
+    .post(adminOnly, regenerateLink)
 
-router.post("/member/regenerate-link/:id", regenerateLink);
 module.exports = router

@@ -1,5 +1,6 @@
 const members = require('../model/Member')
 const sendMail = require('../utils/nodemailer')
+const Invoice=require('../model/Invoice')
 const Plan = require('../model/MembershipPlan')
 const Membership = require('../model/Membership')
 const crypto = require('crypto')
@@ -21,6 +22,16 @@ exports.AddMember = async (req, res) => {
     if (!name || !email || !phone || !whatsappNumber) {
       return res.json({ success: false, message: "All fields required" });
     }
+
+    // 🔒 CHECK EXISTING EMAIL
+    const existingMember = await members.findOne({ email });
+    if (existingMember) {
+      return res.status(409).json({
+        success: false,
+        message: "Email already exists"
+      });
+    }
+
     const member = await members.create({
       name,
       email,
@@ -32,24 +43,27 @@ exports.AddMember = async (req, res) => {
         phone: personalTrainer?.phone || ""
       },
     });
+
     const accessLink = `${process.env.CLIENT_URL}/member/access/${member.secretToken}`;
     await sendMail(member.email, accessLink);
-    return res.status(201).json({ success: true, member });
-  } catch (error) {
-    console.error("AddMember error:", error);
-    res.status(500).json({ success: false, message: "Error adding member", error });
-  }
-};
 
-// exports.viewMembers=async (req,res)=>{
-//   try{
-//       const allMembers= await members.find()
-//       return res.json(allMembers)
-//   }catch(error){
-//     console.error("Fetch Members error:", error);
-//     return res.json({success:false,message:error.message})
-//   }
-// }
+    return res.status(201).json({ success: true, member });
+
+  } catch (error) {
+    if (error.code === 11000) {
+      return res.status(409).json({
+        success: false,
+        message: "Email already exists"
+      });
+    }
+
+    res.status(500).json({
+      success: false,
+      message: "Error adding member"
+    });
+  }
+
+};
 
 
 exports.viewMembers = async (req, res) => {
@@ -148,26 +162,44 @@ exports.assignPlan = async (req, res) => {
     const { planId } = req.body;
 
     const plan = await Plan.findById(planId);
-    if (!plan) return res.json({ success: false, message: "Plan not found" });
+    if (!plan) {
+      return res.json({ success: false, message: "Plan not found" });
+    }
 
     const startDate = new Date();
-    const endDate = new Date(startDate.getTime() + plan.durationInDays * 86400000);
+    const endDate = new Date(
+      startDate.getTime() + plan.durationInDays * 24 * 60 * 60 * 1000
+    );
 
     const membership = await Membership.create({
       memberId,
       planId,
       startDate,
       endDate,
-      status: "ACTIVE",
+      status: "ACTIVE"
     });
 
-    return res.json({ success: true, membership });
+
+    const invoice = await Invoice.create({
+      memberId,
+      membershipId: membership._id,
+      invoiceNumber: `INV-${Date.now()}`,
+      amount: plan.price,
+      status: "PENDING"
+    });
+
+    return res.json({
+      success: true,
+      message: "Plan assigned & invoice generated",
+      membership,
+      invoice
+    });
+
   } catch (error) {
     console.error("Assign Plan Error:", error);
-    return res.json({ success: false, message: "Server error" });
+    return res.status(500).json({ success: false, message: "Server error" });
   }
 };
-
 exports.getPlanHistory = async (req, res) => {
   try {
     const history = await Membership.find({ memberId: req.params.id })
