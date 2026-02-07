@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router";
+import axios from "../../services/axios";
+import { toast } from "react-toastify";
 
 const AddMembershipPlan = () => {
   const [name, setName] = useState("");
@@ -24,12 +25,11 @@ const AddMembershipPlan = () => {
         category,
       });
 
-      alert("Plan Added Successfully");
+      toast.success("Plan Added Successfully");
       navigate("/admin/viewPlan");
 
     } catch (err) {
-      console.error(err);
-      alert("Error adding plan");
+      toast.error("Error adding plan");
     }
   };
 

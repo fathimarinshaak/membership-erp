@@ -21,6 +21,16 @@ exports.AddMember = async (req, res) => {
     if (!name || !email || !phone || !whatsappNumber) {
       return res.json({ success: false, message: "All fields required" });
     }
+
+    // 🔒 CHECK EXISTING EMAIL
+    const existingMember = await members.findOne({ email });
+    if (existingMember) {
+      return res.status(409).json({
+        success: false,
+        message: "Email already exists"
+      });
+    }
+
     const member = await members.create({
       name,
       email,
@@ -32,24 +42,27 @@ exports.AddMember = async (req, res) => {
         phone: personalTrainer?.phone || ""
       },
     });
+
     const accessLink = `${process.env.CLIENT_URL}/member/access/${member.secretToken}`;
     await sendMail(member.email, accessLink);
-    return res.status(201).json({ success: true, member });
-  } catch (error) {
-    console.error("AddMember error:", error);
-    res.status(500).json({ success: false, message: "Error adding member", error });
-  }
-};
 
-// exports.viewMembers=async (req,res)=>{
-//   try{
-//       const allMembers= await members.find()
-//       return res.json(allMembers)
-//   }catch(error){
-//     console.error("Fetch Members error:", error);
-//     return res.json({success:false,message:error.message})
-//   }
-// }
+    return res.status(201).json({ success: true, member });
+
+  } catch (error) {
+    if (error.code === 11000) {
+      return res.status(409).json({
+        success: false,
+        message: "Email already exists"
+      });
+    }
+
+    res.status(500).json({
+      success: false,
+      message: "Error adding member"
+    });
+  }
+
+};
 
 
 exports.viewMembers = async (req, res) => {
