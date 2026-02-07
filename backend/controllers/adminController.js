@@ -1,6 +1,6 @@
 const members = require('../model/Member')
 const sendMail = require('../utils/nodemailer')
-const Invoice=require('../model/Invoice')
+const Invoice = require('../model/Invoice')
 const Plan = require('../model/MembershipPlan')
 const Membership = require('../model/Membership')
 const crypto = require('crypto')
@@ -47,7 +47,7 @@ exports.AddMember = async (req, res) => {
     });
 
     const accessLink = `${process.env.CLIENT_URL}/member/access/${member.secretToken}`;
-    
+
     const mail = accessLinkTemplate(accessLink);
     await sendMail(member.email, mail.subject, mail.html);
 
@@ -83,10 +83,10 @@ exports.viewMembers = async (req, res) => {
 
         return {
           ...m.toObject(),
-          latestPlan: latest ? {
-            name: latest.planId.name,
-            durationInDays: latest.planId.durationInDays,
-            price: latest.planId.price,
+          latestPlan: latest && latest.planId ? {
+            name: latest.planId.name || "—",
+            durationInDays: latest.planId.durationInDays || 0,
+            price: latest.planId.price || 0,
             assignedAt: latest.startDate,
             expiresAt: latest.endDate
           } : null
