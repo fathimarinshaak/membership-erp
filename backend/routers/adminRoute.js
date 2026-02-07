@@ -44,11 +44,10 @@ router
     .post(assignPlan);
 
 router
-.route("/planHistory/:id")
-.get(getPlanHistory);
-
+  .route("/planHistory/:id")
+  .get(getPlanHistory);
 
 router.post("/member/send-link/:id", sendMemberLink);
-
 router.post("/member/regenerate-link/:id", regenerateLink);
+
 module.exports = router
