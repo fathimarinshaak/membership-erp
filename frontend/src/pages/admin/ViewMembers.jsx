@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "../../services/axios";
 import { useNavigate } from "react-router";
+import { toast } from "react-toastify";
 
 const buildAccessLink = (member) => {
   if (!member?.secretToken) return "";
@@ -28,13 +29,12 @@ export default function ViewMember() {
       );
 
       if (res.data.success) {
-        alert("Access link sent to member email");
+        toast.success("Access link sent to member email")
       } else {
-        alert(res.data.message || "Failed to send link");
+        toast.error("Failed to send link")
       }
     } catch (err) {
-      console.error(err);
-      alert("Error sending access link");
+      toast.error("Error sending access link")
     }
   };
 
@@ -51,13 +51,12 @@ export default function ViewMember() {
             m._id === res.data.member._id ? res.data.member : m
           )
         );
-        alert("New access link generated");
+        toast.info("New access link generated")
       } else {
-        alert(res.data.message || "Failed to regenerate link");
+        toast.error("Failed to regenerate link")
       }
     } catch (err) {
-      console.error(err);
-      alert("Error regenerating access link");
+      toast.error("Error regenerating access link")
     }
   };
 
@@ -79,7 +78,7 @@ export default function ViewMember() {
         const res = await axios.get("/api/admin/viewMembers");
         setMembers(res.data);
       } catch (err) {
-        console.error("Error fetching members:", err);
+        toast.error("Error fetching members:");
       }
     };
     fetchMembers();
@@ -91,8 +90,7 @@ export default function ViewMember() {
       const res = await axios.get("http://localhost:3000/api/admin/viewplan");
       setPlans(res.data);
     } catch (err) {
-      console.error(err);
-      alert("Error fetching plans");
+      toast.error("Error fetching plans");
     }
   };
 
@@ -108,24 +106,48 @@ export default function ViewMember() {
 
 
   const deleteMember = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this member?")) return;
-    try {
-      const res = await fetch(
-        `http://localhost:3000/api/admin/deleteMember/${id}`,
-        { method: "POST" }
-      );
-      const data = await res.json();
-      if (data.success) {
-        setMembers(members.filter((m) => m._id !== id));
-        closeModal();
-        alert("Member deleted successfully");
-      } else {
-        alert(data.message || "Member not deleted");
-      }
-    } catch (err) {
-      console.error(err);
-      alert("Error deleting member");
-    }
+    toast.info(
+      ({ closeToast }) => (
+        <div className="space-y-3">
+          <p>Are you sure you want to delete this member?</p>
+          <div className="flex gap-2">
+            <button
+              onClick={async () => {
+                try {
+                  const res = await axios.post(
+                    `/api/admin/deleteMember/${id}`
+                  );
+
+                  if (res.data.success) {
+                    setMembers((prev) =>
+                      prev.filter((m) => m._id !== id)
+                    );
+                    closeModal();
+                    toast.success("Member deleted successfully");
+                  } else {
+                    toast.error("Member not deleted");
+                  }
+                } catch {
+                  toast.error("Error deleting member");
+                }
+                closeToast();
+              }}
+              className="px-3 py-1 bg-red-500 text-white rounded"
+            >
+              Delete
+            </button>
+
+            <button
+              onClick={closeToast}
+              className="px-3 py-1 bg-gray-600 text-white rounded"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      ),
+      { autoClose: false }
+    );
   };
 
   const openEditModal = (member) => {
@@ -169,13 +191,12 @@ export default function ViewMember() {
           )
         );
         closeEditModal();
-        alert("Member updated successfully");
+        toast.success("Member updated successfully")
       } else {
-        alert(res.data.message || "Update failed");
+        toast.error("Update failed")
       }
     } catch (err) {
-      console.error(err);
-      alert("Error updating member");
+      toast.error("Error updating member")
     }
   };
 
@@ -195,6 +216,11 @@ export default function ViewMember() {
     setIsPlanModalOpen(false);
   };
 
+  const hasActivePlan = (member) => {
+    if (!member?.latestPlan?.expiresAt) return false;
+    return new Date(member.latestPlan.expiresAt) > new Date();
+  };
+
   const confirmPlan = async () => {
     if (!selectedPlan || !selectedMember) return;
 
@@ -207,7 +233,6 @@ export default function ViewMember() {
       );
 
       if (res.data.success) {
-        // Update member locally
         setMembers(
           members.map((m) =>
             m._id === selectedMember._id
@@ -228,29 +253,18 @@ export default function ViewMember() {
           latestPlan: {
             ...selectedPlan,
             assignedAt: new Date(),
-            expiresAt: new Date(Date.now() + selectedPlan.durationInDays * 86400000)
-          }
-        });
-
-
-        setSelectedMember({
-          ...selectedMember,
-          latestPlan: {
-            ...selectedPlan,
-            assignedAt: new Date(),
             expiresAt: new Date(Date.now() + selectedPlan.durationInDays * 24 * 60 * 60 * 1000)
           }
         });
 
         setIsPlanModalOpen(false);
         setSelectedPlan(null);
-        alert("Plan added successfully!");
+        toast.success("Plan added successfully!")
       } else {
-        alert(res.data.message || "failed");
+        toast.error("plan adding failed!!")
       }
     } catch (err) {
-      console.error(err);
-      alert("Error assigning plan");
+      toast.error("Error assigning plan");
     }
   };
 
@@ -263,8 +277,7 @@ export default function ViewMember() {
         setIsPlanHistoryOpen(true);
       }
     } catch (err) {
-      console.error(err);
-      alert("Error loading plan history");
+      toast.error("Error loading plan history");
     }
   };
   return (
@@ -290,10 +303,12 @@ export default function ViewMember() {
         <table className="w-full">
           <thead className="bg-white/5">
             <tr className="text-left text-gray-400 text-sm uppercase">
+              <th className="px-6 py-4">#</th>
               <th className="px-6 py-4">Name</th>
               <th className="px-6 py-4">Email</th>
               <th className="px-6 py-4">Phone</th>
               <th className="px-6 py-4">WhatsApp</th>
+              <th className="px-6 py-4">Plan Expiry</th>
               <th className="px-6 py-4">Status</th>
               <th className="px-6 py-4 text-right">Actions</th>
             </tr>
@@ -307,15 +322,32 @@ export default function ViewMember() {
                 </td>
               </tr>
             ) : (
-              members.map((member) => (
+              members.map((member, index) => (
                 <tr
                   key={member._id}
                   className="border-t border-white/5 hover:bg-white/5 transition"
                 >
+                  <td className="px-6 py-4 text-gray-400">{index + 1}</td>
                   <td className="px-6 py-4 font-medium">{member.name}</td>
                   <td className="px-6 py-4 text-gray-400">{member.email}</td>
                   <td className="px-6 py-4">{member.phone}</td>
                   <td className="px-6 py-4">{member.whatsappNumber}</td>
+                  <td className="px-6 py-4 text-sm">
+                    {member.latestPlan?.expiresAt ? (
+                      <span
+                        className={
+                          new Date(member.latestPlan.expiresAt) < new Date()
+                            ? "text-red-400"
+                            : "text-green-400"
+                        }
+                      >
+                        {new Date(member.latestPlan.expiresAt).toLocaleDateString()}
+                      </span>
+                    ) : (
+                      <span className="text-gray-600">—</span>
+                    )}
+                  </td>
+
                   <td className="px-6 py-4">
                     <span
                       className={`px-3 py-1 rounded-full text-xs font-semibold ${member.status === "ACTIVE"
@@ -422,7 +454,7 @@ export default function ViewMember() {
                     navigator.clipboard.writeText(
                       buildAccessLink(selectedMember)
                     );
-                    alert("Access link copied");
+                    toast.success("Access link copied to clipboard 📋");
                   }}
                   className="px-3 py-2 rounded-lg bg-blue-500/15 text-blue-400 border border-blue-500/30 hover:bg-blue-500/25"
                 >
@@ -462,19 +494,6 @@ export default function ViewMember() {
               </div>
             </div>
 
-
-            {/* CURRENT PLAN DISPLAY */}
-            {/* {selectedMember.currentPlan && (
-  <div className="mt-4 p-4 bg-green-600/10 border border-green-500/30 rounded-xl">
-    <h3 className="text-lg font-bold text-green-400">Current Plan</h3>
-    <p className="text-gray-300">{selectedMember.currentPlan.name}</p>
-    <p className="text-gray-300">
-      {selectedMember.currentPlan.durationInDays} days | ₹
-      {selectedMember.currentPlan.price}
-    </p>
-  </div>
-)} */}
-
             {/* BUTTONS */}
             <div className="flex justify-between mt-6">
 
@@ -492,19 +511,20 @@ export default function ViewMember() {
                 Close
               </button>
 
-              {/* Add Plan Badge */}
               <button
                 onClick={openPlanModal}
-                className="
-      px-4 py-2 rounded-full text-sm font-semibold
-      bg-orange-500/15 text-orange-400
-      border border-orange-500/30
-      hover:bg-orange-500/25 hover:text-orange-300
-      transition
-    "
+                disabled={hasActivePlan(selectedMember)}
+                className={`
+    px-4 py-2 rounded-full text-sm font-semibold transition
+    ${hasActivePlan(selectedMember)
+                    ? "bg-gray-500/10 text-gray-500 border border-gray-500/20 cursor-not-allowed"
+                    : "bg-orange-500/15 text-orange-400 border border-orange-500/30 hover:bg-orange-500/25 hover:text-orange-300"
+                  }
+  `}
               >
                 Add Plan
               </button>
+
               <button
                 onClick={() => openPlanHistory(selectedMember._id)}
                 className="
