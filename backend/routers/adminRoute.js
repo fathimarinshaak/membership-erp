@@ -1,6 +1,7 @@
 const { createPlan, getPlans, updatePlan, deletePlan } = require('../controllers/membershipController')
 const { dashboard, AddMember, viewMembers, deleteMember, updateMember, editMember, assignPlan, getPlanHistory } = require('../controllers/adminController')
 const { adminOnly } = require('../middleware/auth')
+const { getInvoicesByMember, paymentSuccess } = require('../controllers/invoiceController')
 
 const router = require('express').Router()
 
@@ -46,4 +47,10 @@ router
 router
 .route("/planHistory/:id")
 .get(getPlanHistory);
+
+
+router
+    .route('/member/:memberId/invoices')
+    .get(getInvoicesByMember)
+
 module.exports = router

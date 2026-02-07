@@ -10,6 +10,7 @@ import AdminGuard from "./guards/adminguard";
 import AddMembershipPlan from "./pages/admin/AddMembershipPlan";
 import ViewMembershipPlans from "./pages/admin/ViewMembershipPlan";
 import EditMembershipPlan from "./pages/admin/EditMembershipPlan";
+import MemberInvoices from "./pages/admin/MemberInvoices";
 
 export default function App() {
   return (
@@ -37,6 +38,7 @@ export default function App() {
             <Route path="addPlan" element={<AddMembershipPlan />} />
             <Route path="viewPlan" element={<ViewMembershipPlans />} />
             <Route path="editPlan/:id" element={<EditMembershipPlan />} />
+            <Route path="/admin/members/:memberId/invoices" element={<MemberInvoices />}/>
           </Route>
         </Route>
       </Routes>
