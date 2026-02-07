@@ -1,5 +1,6 @@
 const MembershipPlan = require('../model/MembershipPlan')
 
+
 exports.createPlan = async (req, res) => {
   try {
     const { name, durationInDays, price, features, isActive, category } = req.body

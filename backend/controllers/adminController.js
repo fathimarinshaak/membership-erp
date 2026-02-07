@@ -1,5 +1,6 @@
 const members = require('../model/Member')
 const sendMail = require('../utils/nodemailer')
+const Invoice=require('../model/Invoice')
 const Plan = require('../model/MembershipPlan')
 const Membership = require('../model/Membership')
 const crypto = require('crypto')
@@ -161,26 +162,44 @@ exports.assignPlan = async (req, res) => {
     const { planId } = req.body;
 
     const plan = await Plan.findById(planId);
-    if (!plan) return res.json({ success: false, message: "Plan not found" });
+    if (!plan) {
+      return res.json({ success: false, message: "Plan not found" });
+    }
 
     const startDate = new Date();
-    const endDate = new Date(startDate.getTime() + plan.durationInDays * 86400000);
+    const endDate = new Date(
+      startDate.getTime() + plan.durationInDays * 24 * 60 * 60 * 1000
+    );
 
     const membership = await Membership.create({
       memberId,
       planId,
       startDate,
       endDate,
-      status: "ACTIVE",
+      status: "ACTIVE"
     });
 
-    return res.json({ success: true, membership });
+
+    const invoice = await Invoice.create({
+      memberId,
+      membershipId: membership._id,
+      invoiceNumber: `INV-${Date.now()}`,
+      amount: plan.price,
+      status: "PENDING"
+    });
+
+    return res.json({
+      success: true,
+      message: "Plan assigned & invoice generated",
+      membership,
+      invoice
+    });
+
   } catch (error) {
     console.error("Assign Plan Error:", error);
-    return res.json({ success: false, message: "Server error" });
+    return res.status(500).json({ success: false, message: "Server error" });
   }
 };
-
 exports.getPlanHistory = async (req, res) => {
   try {
     const history = await Membership.find({ memberId: req.params.id })

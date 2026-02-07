@@ -538,6 +538,15 @@ export default function ViewMember() {
                 My Plans
               </button>
 
+              <button
+  onClick={() =>
+    navigate(`/admin/members/${selectedMember._id}/invoices`)
+  }
+  className="px-4 py-2 rounded-full bg-blue-500/15 text-blue-400 border border-blue-500/30"
+>
+  Invoices
+</button>
+
             </div>
 
 

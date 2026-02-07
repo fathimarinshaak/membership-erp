@@ -1,6 +1,7 @@
 const { createPlan, getPlans, updatePlan, deletePlan } = require('../controllers/membershipController')
 const { dashboard, AddMember, viewMembers, deleteMember, editMember, assignPlan, getPlanHistory, sendMemberLink, regenerateLink } = require('../controllers/adminController')
 const { adminOnly } = require('../middleware/auth')
+const { getInvoicesByMember, paymentSuccess } = require('../controllers/invoiceController')
 
 const router = require('express').Router()
 
@@ -48,6 +49,10 @@ router
     .route("/planHistory/:id")
     .get(adminOnly, getPlanHistory);
 
+router
+    .route('/member/:memberId/invoices')
+    .get(adminOnly, getInvoicesByMember)
+   
 router
     .route("/member/send-link/:id")
     .post(adminOnly, sendMemberLink)
