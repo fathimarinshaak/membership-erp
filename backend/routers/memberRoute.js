@@ -1,10 +1,10 @@
-const { dashboard } = require('../controllers/memberController')
-const { memberOnly } = require('../middleware/auth')
+const {userDashboard } = require('../controllers/memberController')
+// const { memberOnly } = require('../middleware/auth')
 
 const router = require('express').Router()
 
-router
-    .route('/dashboard')
-    .get(memberOnly, dashboard)
+router.get("/dashboard/:token", userDashboard);
+
+
 
 module.exports = router

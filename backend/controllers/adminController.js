@@ -1,8 +1,8 @@
 const members = require('../model/Member')
 const sendMail = require('../utils/nodemailer')
-
 const Plan = require('../model/MembershipPlan')
 const Membership = require('../model/Membership')
+const crypto = require('crypto')
 exports.dashboard = (req, res) => {
   return res.json({ msg: "dashboard" })
 }
@@ -32,7 +32,7 @@ exports.AddMember = async (req, res) => {
         phone: personalTrainer?.phone || ""
       },
     });
-    const accessLink = `${process.env.CLIENT_URL}/api/member/auth/${member.secretToken}`;
+    const accessLink = `${process.env.CLIENT_URL}/member/access/${member.secretToken}`;
     await sendMail(member.email, accessLink);
     return res.status(201).json({ success: true, member });
   } catch (error) {
@@ -173,10 +173,60 @@ exports.getPlanHistory = async (req, res) => {
     const history = await Membership.find({ memberId: req.params.id })
       .populate("planId")
       .sort({ startDate: -1 });
-
     return res.json({ success: true, history });
   } catch (error) {
     console.error("Plan History Error:", error);
     res.json({ success: false });
+  }
+};
+
+exports.sendMemberLink = async (req, res) => {
+  try {
+    const member = await members.findById(req.params.id);
+    if (!member) return res.json({ success: false });
+
+    // auto regenerate if expired
+    if (!member.secretToken || member.expiresAt < new Date()) {
+      member.secretToken = crypto.randomBytes(32).toString("hex");
+      member.expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+      await member.save();
+    }
+
+    const link = `${process.env.CLIENT_URL}/member/access/${member.secretToken}`;
+    await sendMail(member.email, link);
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false });
+  }
+};
+
+/* ---------------- REGENERATE LINK ---------------- */
+exports.regenerateLink = async (req, res) => {
+  try {
+    const member = await members.findById(req.params.id);
+    if (!member) return res.json({ success: false, message: "Member not found" });
+
+    // Generate new token
+    member.secretToken = crypto.randomBytes(32).toString("hex");
+    member.expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+
+    await member.save();
+
+    const link = `${process.env.CLIENT_URL}/member/access/${member.secretToken}`;
+
+    // ✅ Send email
+    await sendMail(member.email, link);
+
+    res.json({
+      success: true,
+      member,
+      link,
+      message: "Link regenerated and emailed successfully"
+    });
+  } catch (err) {
+    console.error("Regenerate Link Error:", err);
+    res.status(500).json({ success: false, message: err.message });
   }
 };

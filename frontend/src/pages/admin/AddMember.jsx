@@ -36,29 +36,29 @@ export default function AddMember() {
     };
 
     try {
-    const res = await axios.post("/api/admin/addMember", memberData);
+      const res = await axios.post("/api/admin/addMember", memberData);
 
-    toast.success("member added successfully!")
-    toast.info(`access link send to ${form.name}`)
+      toast.success("member added successfully!")
+      toast.info(`access link send to ${form.name}`)
 
-    // Reset form
-    setForm({
-      name: "",
-      email: "",
-      phone: "",
-      whatsappNumber: "",
-      personalTrainerName: "",
-      personalTrainerPhone: "",
-      status: "ACTIVE",
-    });
+      // Reset form
+      setForm({
+        name: "",
+        email: "",
+        phone: "",
+        whatsappNumber: "",
+        personalTrainerName: "",
+        personalTrainerPhone: "",
+        status: "ACTIVE",
+      });
 
-  } catch (err) {
-    console.error("Error adding member:", err);
-    alert("Failed to add member");
-  }
-};
-    // TODO: axios.post("/api/members", memberData)
-  
+    } catch (err) {
+      console.error("Error adding member:", err);
+      alert("Failed to add member");
+    }
+  };
+  // TODO: axios.post("/api/members", memberData)
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#0f0f0f] via-[#121212] to-black flex items-center justify-center p-8">
@@ -175,13 +175,13 @@ export default function AddMember() {
 
           {/* Submit Button */}
           <button
-  type="submit"
-  className="w-full text-white py-2 px-6 rounded-full text-sm font-semibold transition 
+            type="submit"
+            className="w-full text-white py-2 px-6 rounded-full text-sm font-semibold transition 
              bg-orange-500/20 hover:bg-orange-500/30 
              border border-orange-400/40"
->
-  Add Member
-</button>
+          >
+            Add Member
+          </button>
 
         </form>
       </div>
