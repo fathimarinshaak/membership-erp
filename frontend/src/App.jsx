@@ -41,7 +41,7 @@ export default function App() {
             <Route path="addPlan" element={<AddMembershipPlan />} />
             <Route path="viewPlan" element={<ViewMembershipPlans />} />
             <Route path="editPlan/:id" element={<EditMembershipPlan />} />
-            <Route path="/admin/members/:memberId/invoices" element={<MemberInvoices />}/>
+            <Route path="members/:memberId/invoices" element={<MemberInvoices />}/>
           </Route>
         </Route>
 

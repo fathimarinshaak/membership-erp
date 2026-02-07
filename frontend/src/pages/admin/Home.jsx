@@ -13,7 +13,7 @@ const Home = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           
-          {/* ADD MEMBER CARD */}
+          
           <div
             onClick={() => navigate("/admin/addMember")}
             className="cursor-pointer backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl p-10 text-center shadow-xl hover:bg-white/10 transition"
@@ -26,7 +26,7 @@ const Home = () => {
             </p>
           </div>
 
-          {/* VIEW MEMBERS CARD */}
+         
           <div
             onClick={() => navigate("/admin/viewMember")}
             className="cursor-pointer backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl p-10 text-center shadow-xl hover:bg-white/10 transition"
