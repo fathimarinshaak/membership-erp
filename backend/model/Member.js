@@ -43,7 +43,6 @@ memberSchema.pre('save', function() {
     this.secretToken = crypto.randomBytes(32).toString('hex');
     this.expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
   }
-//   next();
 });
 // memberSchema.pre('save', async function () {
 //   if (!this.secretToken) {

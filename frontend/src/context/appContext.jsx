@@ -5,35 +5,32 @@ import axios from "../services/axios";
 export const appContent = createContext()
 
 export const AppContextProvider = (props) => {
+    const backendUrl = import.meta.env.VITE_API_URL
 
-    const [adminLoggedIn, setAdminLoggedIn] = useState(false);
-    const [memberLoggedIn, setMemberLoggedIn] = useState(false);
+    const [isLoggedIn, setIsLoggedIn] = useState(false)
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
         const checkAuth = async () => {
             try {
-                const adminRes = await axios.get("/api/auth/isAdminAuth");
-                if (adminRes.data.success) setAdminLoggedIn(true);
-            } catch { }
-
-            try {
-                const memberRes = await axios.get("/api/member/isAuth");
-                if (memberRes.data.success) setMemberLoggedIn(true);
-            } catch { }
-
-            setLoading(false);
+                const { data } = await axios.get("/api/auth/isAdminAuth");
+                if (data.success) {
+                    setIsLoggedIn(true);
+                }
+            } catch {
+                setIsLoggedIn(false);
+            } finally {
+                setLoading(false);
+            }
         };
 
         checkAuth();
     }, []);
 
     const value = {
-        adminLoggedIn,
-        setAdminLoggedIn,
-        memberLoggedIn,
-        setMemberLoggedIn,
-        loading, setLoading
+        backendUrl,
+        isLoggedIn, setIsLoggedIn,
+        loading,setLoading
     }
 
     return (

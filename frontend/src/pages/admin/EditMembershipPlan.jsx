@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { useNavigate, useParams } from "react-router";
+import axios from "../../services/axios";
+import { toast } from "react-toastify";
 
 const EditMembershipPlan = () => {
   const { id } = useParams();
@@ -27,8 +28,7 @@ const EditMembershipPlan = () => {
           setCategory(plan.category || "Basic");
         }
       } catch (err) {
-        console.error(err);
-        alert("Error fetching plan");
+        toast.error("Error fetching plan");
       }
     };
     fetchPlan();
@@ -46,11 +46,10 @@ const EditMembershipPlan = () => {
         category,
       });
 
-      alert("Plan Updated Successfully");
+      toast.success("Plan Updated Successfully");
       navigate("/admin/viewPlan");
     } catch (err) {
-      console.error(err);
-      alert("Error updating plan");
+      toast.error("Error updating plan");
     }
   };
 

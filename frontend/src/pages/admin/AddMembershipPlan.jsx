@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router";
+import axios from "../../services/axios";
+import { toast } from "react-toastify";
 
 const AddMembershipPlan = () => {
   const [name, setName] = useState("");
@@ -24,12 +25,11 @@ const AddMembershipPlan = () => {
         category,
       });
 
-      alert("Plan Added Successfully");
+      toast.success("Plan Added Successfully");
       navigate("/admin/viewPlan");
 
     } catch (err) {
-      console.error(err);
-      alert("Error adding plan");
+      toast.error("Error adding plan");
     }
   };
 
@@ -37,13 +37,13 @@ const AddMembershipPlan = () => {
     <div className="min-h-screen bg-gradient-to-br from-[#0f0f0f] via-[#121212] to-black flex items-center justify-center p-8">
       {/* Glass Container */}
       <div className="w-full max-w-3xl backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl shadow-2xl p-10">
-        
+
         <h2 className="text-3xl font-bold text-gray-100 mb-8 text-center">
           Add Membership Plan
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          
+
           {/* Plan Name */}
           <div>
             <label className="block text-gray-400 mb-1">Plan Name</label>
@@ -92,30 +92,30 @@ const AddMembershipPlan = () => {
 
           {/* Category */}
           <div>
-  <label className="block text-gray-400 mb-1">Category</label>
+            <label className="block text-gray-400 mb-1">Category</label>
 
-  <div className="relative">
-    <select
-      value={category}
-      onChange={(e) => setCategory(e.target.value)}
-      className="
+            <div className="relative">
+              <select
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                className="
         w-full bg-black/40 border border-white/10 rounded-xl px-4 py-2 
         text-gray-200 focus:ring-2 focus:ring-orange-500 focus:outline-none
         appearance-none
       "
-    >
-      <option className="bg-[#1a1a1a] text-gray-200" value="Basic">Basic</option>
-      <option className="bg-[#1a1a1a] text-gray-200" value="Trial">Trial</option>
-      <option className="bg-[#1a1a1a] text-gray-200" value="Premium">Premium</option>
-      <option className="bg-[#1a1a1a] text-gray-200" value="Seasonal">Seasonal</option>
-    </select>
+              >
+                <option className="bg-[#1a1a1a] text-gray-200" value="Basic">Basic</option>
+                <option className="bg-[#1a1a1a] text-gray-200" value="Trial">Trial</option>
+                <option className="bg-[#1a1a1a] text-gray-200" value="Premium">Premium</option>
+                <option className="bg-[#1a1a1a] text-gray-200" value="Seasonal">Seasonal</option>
+              </select>
 
-    {/* Custom dropdown arrow */}
-    <span className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
-      ▼
-    </span>
-  </div>
-</div>
+              {/* Custom dropdown arrow */}
+              <span className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
+                ▼
+              </span>
+            </div>
+          </div>
 
           {/* Features */}
           <div>

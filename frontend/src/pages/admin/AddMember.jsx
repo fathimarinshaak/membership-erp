@@ -1,8 +1,10 @@
 import { useState } from "react";
 import axios from "../../services/axios";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router";
 
 export default function AddMember() {
+  const navigate = useNavigate()
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -36,29 +38,23 @@ export default function AddMember() {
     };
 
     try {
-    const res = await axios.post("/api/admin/addMember", memberData);
+      const res = await axios.post("/api/admin/addMember", memberData);
 
-    toast.success("member added successfully!")
-    toast.info(`access link send to ${form.name}`)
+      if (res.data.success) {
+        toast.success("Member added successfully!");
+        toast.info(`Access link sent to ${form.name}`);
+        navigate("/admin/viewMember");
+      }
+    } catch (err) {
+      if (err.response?.status === 409) {
+        toast.error("Email already exists ❌");
+      } else {
+        toast.error("Failed to add member");
+      }
+    }
 
-    // Reset form
-    setForm({
-      name: "",
-      email: "",
-      phone: "",
-      whatsappNumber: "",
-      personalTrainerName: "",
-      personalTrainerPhone: "",
-      status: "ACTIVE",
-    });
 
-  } catch (err) {
-    console.error("Error adding member:", err);
-    alert("Failed to add member");
-  }
-};
-    // TODO: axios.post("/api/members", memberData)
-  
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#0f0f0f] via-[#121212] to-black flex items-center justify-center p-8">
@@ -102,7 +98,7 @@ export default function AddMember() {
             <div>
               <label className="block text-gray-400 mb-1">Phone Number</label>
               <input
-                type="text"
+                type="number"
                 name="phone"
                 value={form.phone}
                 onChange={handleChange}
@@ -115,7 +111,7 @@ export default function AddMember() {
             <div>
               <label className="block text-gray-400 mb-1">WhatsApp Number</label>
               <input
-                type="text"
+                type="number"
                 name="whatsappNumber"
                 value={form.whatsappNumber}
                 onChange={handleChange}
@@ -148,7 +144,7 @@ export default function AddMember() {
               <div>
                 <label className="block text-gray-400 mb-1">Trainer Phone</label>
                 <input
-                  type="text"
+                  type="number"
                   name="personalTrainerPhone"
                   value={form.personalTrainerPhone}
                   onChange={handleChange}
@@ -175,13 +171,13 @@ export default function AddMember() {
 
           {/* Submit Button */}
           <button
-  type="submit"
-  className="w-full text-white py-2 px-6 rounded-full text-sm font-semibold transition 
+            type="submit"
+            className="w-full text-white py-2 px-6 rounded-full text-sm font-semibold transition 
              bg-orange-500/20 hover:bg-orange-500/30 
              border border-orange-400/40"
->
-  Add Member
-</button>
+          >
+            Add Member
+          </button>
 
         </form>
       </div>

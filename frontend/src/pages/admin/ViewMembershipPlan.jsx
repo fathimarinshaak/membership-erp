@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router";
+import axios from "../../services/axios";
+import { toast } from "react-toastify";
 
 const ViewMembershipPlans = () => {
   const [plans, setPlans] = useState([]);
@@ -18,7 +19,7 @@ const ViewMembershipPlans = () => {
       setPlans(res.data);
     } catch (err) {
       console.error(err);
-      alert("Error fetching plans");
+      toast.error("Error fetching plans");
     }
   };
 
@@ -26,15 +27,45 @@ const ViewMembershipPlans = () => {
     fetchPlans();
   }, []);
 
-  const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure?")) return;
-    try {
-      await axios.post(`http://localhost:3000/api/admin/deleteplan/${id}`);
-      fetchPlans();
-    } catch (err) {
-      console.error(err);
-      alert("Error deleting plan");
-    }
+  const handleDelete = (id) => {
+    toast(
+      ({ closeToast }) => (
+        <div className="flex flex-col gap-3">
+          <span className="text-sm">Are you sure you want to delete this plan?</span>
+
+          <div className="flex justify-end gap-2">
+            <button
+              onClick={closeToast}
+              className="px-3 py-1 text-xs rounded bg-gray-600 hover:bg-gray-700"
+            >
+              Cancel
+            </button>
+
+            <button
+              onClick={async () => {
+                try {
+                  await axios.post(`/api/admin/deleteplan/${id}`);
+                  toast.success("Plan deleted successfully");
+                  fetchPlans();
+                } catch (err) {
+                  console.error(err);
+                  toast.error("Error deleting plan");
+                }
+                closeToast();
+              }}
+              className="px-3 py-1 text-xs rounded bg-red-600 hover:bg-red-700"
+            >
+              Delete
+            </button>
+          </div>
+        </div>
+      ),
+      {
+        autoClose: false,
+        closeOnClick: false,
+        closeButton: false,
+      }
+    );
   };
 
   const handleEdit = (id) => navigate(`/admin/editPlan/${id}`);
@@ -149,11 +180,10 @@ const ViewMembershipPlans = () => {
                   <td className="px-6 py-4 text-gray-300">{plan.category}</td>
                   <td className="px-6 py-4">
                     <span
-                      className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                        plan.isActive
+                      className={`px-3 py-1 rounded-full text-xs font-semibold ${plan.isActive
                           ? "bg-green-500/20 text-green-400 border border-green-500/30"
                           : "bg-red-500/20 text-red-400 border border-red-500/30"
-                      }`}
+                        }`}
                     >
                       {plan.isActive ? "Active" : "Inactive"}
                     </span>
@@ -162,11 +192,11 @@ const ViewMembershipPlans = () => {
                   <td className="px-6 py-4">
                     <div className="flex justify-start gap-3">
                       <button
-                      onClick={() => openModal(plan.features)}
-                      className="px-3 py-1 text-xs rounded-full bg-blue-500/20 text-blue-400 border border-blue-500/30 hover:bg-blue-500/30 transition"
-                    >
-                      View
-                    </button>
+                        onClick={() => openModal(plan.features)}
+                        className="px-3 py-1 text-xs rounded-full bg-blue-500/20 text-blue-400 border border-blue-500/30 hover:bg-blue-500/30 transition"
+                      >
+                        View
+                      </button>
                       <button
                         onClick={() => handleEdit(plan._id)}
                         className="px-3 py-1 text-xs rounded-full bg-yellow-500/20 text-yellow-400 border border-yellow-500/30 hover:bg-yellow-500/30 transition"

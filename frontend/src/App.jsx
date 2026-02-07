@@ -1,5 +1,4 @@
 import Login from "./pages/admin/AdminLogin";
-import AddMember from "./pages/admin/addMember";
 import ViewMember from "./pages/admin/ViewMembers";
 import Home from "./pages/admin/Home";
 import AdminLayout from "./layouts/AdminLayout";
@@ -11,11 +10,15 @@ import AddMembershipPlan from "./pages/admin/AddMembershipPlan";
 import ViewMembershipPlans from "./pages/admin/ViewMembershipPlan";
 import EditMembershipPlan from "./pages/admin/EditMembershipPlan";
 import MemberInvoices from "./pages/admin/MemberInvoices";
+import AddMember from "./pages/admin/AddMember";
+import MemberLayout from "./layouts/MemberLayout";
+import MemberHome from "./pages/member/MemberHome";
+import MemberAccess from "./pages/member/MemberAccess";
 
 export default function App() {
   return (
     <>
-      <ToastContainer  
+      <ToastContainer
         position="bottom-center"
         autoClose={3000}
         hideProgressBar={false}
@@ -23,7 +26,7 @@ export default function App() {
         closeOnClick
         pauseOnHover
         draggable
-        theme="dark"/>
+        theme="dark" />
 
       <Routes>
         {/* PUBLIC */}
@@ -41,6 +44,11 @@ export default function App() {
             <Route path="/admin/members/:memberId/invoices" element={<MemberInvoices />}/>
           </Route>
         </Route>
+
+        <Route path="/member/access/:token" element={<MemberLayout />}>
+          <Route index element={<MemberHome />} />
+        </Route>
+
       </Routes>
     </>
   );

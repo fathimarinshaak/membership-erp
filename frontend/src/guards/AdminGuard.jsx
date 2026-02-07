@@ -3,10 +3,10 @@ import { Navigate, Outlet } from "react-router";
 import { appContent } from "../context/appContext";
 
 const AdminGuard = () => {
-  const { adminLoggedIn, loading } = useContext(appContent);
+  const { isLoggedIn, loading } = useContext(appContent);
 
   if (loading) return <div>Checking admin auth...</div>;
-  if (!adminLoggedIn) return <Navigate to="/admin/login" replace />;
+  if (!isLoggedIn) return <Navigate to="/admin/login" replace />;
 
   return <Outlet />;
 };
