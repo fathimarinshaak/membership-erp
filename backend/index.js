@@ -1,4 +1,5 @@
 require('dotenv').config();
+require("./cron/membershipReminder.cron");
 
 const express = require('express');
 const app = express();
