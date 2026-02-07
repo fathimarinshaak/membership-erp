@@ -27,6 +27,26 @@ const MemberInvoices = () => {
     fetchInvoices();
   }, [memberId]);
 
+  const markAsPaidCash = async (invoiceId) => {
+    try {
+      const res = await axios.post("/api/admin/payment/cash", {
+        invoiceId
+      });
+
+      if (res.data.success) {
+        setInvoices(prev =>
+          prev.map(inv =>
+            inv._id === invoiceId
+              ? { ...inv, status: "PAID", paymentMethod: "CASH" }
+              : inv
+          )
+        );
+      }
+    } catch (err) {
+      console.error("Failed to mark cash payment", err);
+    }
+  };
+
   return (
     <div className="p-6">
       <div className="bg-white rounded-xl shadow border">
@@ -52,6 +72,8 @@ const MemberInvoices = () => {
                   <th className="px-6 py-3 text-right">Amount</th>
                   <th className="px-6 py-3 text-center">Status</th>
                   <th className="px-6 py-3 text-right">Date</th>
+                  <th className="px-6 py-3 text-center">Action</th>
+                  
                 </tr>
               </thead>
 
@@ -67,10 +89,7 @@ const MemberInvoices = () => {
                   </tr>
                 ) : (
                   invoices.map((inv) => (
-                    <tr
-                      key={inv._id}
-                      className="hover:bg-gray-50 transition"
-                    >
+                    <tr key={inv._id} className="hover:bg-gray-50 transition">
                       <td className="px-6 py-4 font-medium text-gray-800">
                         {inv.invoiceNumber}
                       </td>
@@ -95,13 +114,25 @@ const MemberInvoices = () => {
                       </td>
 
                       <td className="px-6 py-4 text-right text-gray-600">
-                        {new Date(inv.createdAt).toLocaleString("en-GB", {
-                          day: "2-digit",
-                          month: "short",
-                          year: "numeric",
-                        })}
+                        {new Date(inv.createdAt).toLocaleDateString("en-GB")}
+                      </td>
+
+                      {/* ✅ ACTION */}
+                      <td className="px-6 py-4 text-center">
+                        {inv.status === "PAID" ? (
+                          <span className="text-gray-400 text-xs">—</span>
+                        ) : (
+                          <button
+                            onClick={() => markAsPaidCash(inv._id)}
+                            className="px-3 py-1 text-xs font-semibold rounded-md
+                   bg-green-600 text-white hover:bg-green-700"
+                          >
+                            Mark Paid (Cash)
+                          </button>
+                        )}
                       </td>
                     </tr>
+
                   ))
                 )}
               </tbody>
