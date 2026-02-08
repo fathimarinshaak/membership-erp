@@ -32,6 +32,10 @@ const invoiceSchema = new mongoose.Schema({
   },
   paymentMethod: {
     type: String
+  },
+  companyName: {
+    type: String,
+    required: true,
   }
 }, { timestamps: true });
 
