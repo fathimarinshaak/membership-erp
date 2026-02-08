@@ -9,11 +9,11 @@ import AdminGuard from "./guards/adminguard";
 import AddMembershipPlan from "./pages/admin/AddMembershipPlan";
 import ViewMembershipPlans from "./pages/admin/ViewMembershipPlan";
 import EditMembershipPlan from "./pages/admin/EditMembershipPlan";
-import MemberInvoices from "./pages/admin/MemberInvoices";
+import MemberInvoicesTable from "./pages/admin/MemberInvoicesTable"
 import AddMember from "./pages/admin/AddMember";
 import MemberLayout from "./layouts/MemberLayout";
 import MemberHome from "./pages/member/MemberHome";
-import MemberAccess from "./pages/member/MemberAccess";
+import InvoicePreview from "./pages/admin/InvoicePreview";
 import PaymentHistory from "./pages/member/PaymentHistory";
 import MembershipHistory from "./pages/member/MembershipHistory";
 
@@ -43,7 +43,8 @@ export default function App() {
             <Route path="addPlan" element={<AddMembershipPlan />} />
             <Route path="viewPlan" element={<ViewMembershipPlans />} />
             <Route path="editPlan/:id" element={<EditMembershipPlan />} />
-            <Route path="members/:memberId/invoices" element={<MemberInvoices />}/>
+            <Route path="members/:memberId/invoices" element={<MemberInvoicesTable />}/>
+            <Route  path="invoices/:invoiceId" element={<InvoicePreview/>} />
           </Route>
         </Route>
 

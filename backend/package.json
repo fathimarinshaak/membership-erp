@@ -19,6 +19,7 @@
     "mongoose": "^9.1.5",
     "node-cron": "^4.2.1",
     "nodemailer": "^8.0.0",
+    "puppeteer": "^24.37.2",
     "razorpay": "^2.9.6"
   }
 }
