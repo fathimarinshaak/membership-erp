@@ -23,6 +23,27 @@ const MemberInvoices = () => {
     fetchInvoices();
   }, [memberId]);
 
+  const markAsPaidCash = async (invoiceId) => {
+    try {
+      const res = await axios.post("/api/admin/payment/cash", {
+        invoiceId
+      });
+
+      if (res.data.success) {
+        setInvoices(prev =>
+          prev.map(inv =>
+            inv._id === invoiceId
+              ? { ...inv, status: "PAID", paymentMethod: "CASH" }
+              : inv
+          )
+        );
+      }
+    } catch (err) {
+      console.error("Failed to mark cash payment", err);
+    }
+  };
+
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#0f0f0f] via-[#121212] to-black text-gray-200 p-8">
       <div className="mb-6 flex items-center justify-between">
@@ -41,6 +62,7 @@ const MemberInvoices = () => {
               <th className="px-6 py-4 text-right">Amount</th>
               <th className="px-6 py-4 text-center">Status</th>
               <th className="px-6 py-4 text-right">Date</th>
+              <th className="px-6 py-4 text-right">Cash Payment</th>
               <th className="px-6 py-4 text-right">Action</th>
             </tr>
           </thead>
@@ -76,11 +98,10 @@ const MemberInvoices = () => {
                   </td>
                   <td className="px-6 py-4 text-center">
                     <span
-                      className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                        inv.status === "PAID"
+                      className={`px-3 py-1 rounded-full text-xs font-semibold ${inv.status === "PAID"
                           ? "bg-green-500/20 text-green-400"
                           : "bg-red-500/20 text-red-400"
-                      }`}
+                        }`}
                     >
                       {inv.status}
                     </span>
@@ -92,6 +113,19 @@ const MemberInvoices = () => {
                       year: "numeric",
                     })}
                   </td>
+                  <td className="px-6 py-4 text-center">
+    {inv.status === "PAID" ? (
+      <span className="text-gray-400 text-xs">—</span>
+    ) : (
+      <button
+        onClick={() => markAsPaidCash(inv._id)}
+        className="px-3 py-1 text-xs font-semibold rounded-md
+                   bg-green-600 text-white hover:bg-green-700"
+      >
+        Mark Paid (Cash)
+      </button>
+    )}
+  </td>
                   <td className="px-6 py-4 text-right">
                     <button
                       onClick={() => navigate(`/admin/invoices/${inv._id}`)}

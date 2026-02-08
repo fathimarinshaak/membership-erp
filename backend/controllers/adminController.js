@@ -189,7 +189,7 @@ exports.assignPlan = async (req, res) => {
       membershipId: membership._id,
       invoiceNumber: `INV-${Date.now()}`,
       amount: plan.price,
-      status: "unpaid"
+      status: "PENDING"
     });
 
     return res.json({
