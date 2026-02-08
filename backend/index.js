@@ -27,43 +27,6 @@ app.use('/api/member', memberRouter)
 
 const port = process.env.PORT || 5000;
 
-const razorpay = require('./utils/razorpay');
-app.post("/api/payment/create-order", async (req, res) => {
-  try {
-    const { amount } = req.body;
-
-    const order = await razorpay.orders.create({
-      amount: amount * 100,
-      currency: "INR",
-      receipt: "receipt_" + Date.now()
-    });
-
-    res.json(order);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// 👉 Verify Payment API
-app.post("/api/payment/verify", (req, res) => {
-  const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
-
-  const sign = razorpay_order_id + "|" + razorpay_payment_id;
-
-  const expectedSign = crypto
-    .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
-    .update(sign)
-    .digest("hex");
-
-  if (expectedSign === razorpay_signature) {
-    res.json({ success: true });
-  } else {
-    res.status(400).json({ success: false });
-  }
-});
-
-
-
 app.listen(port, async () => {
 	await connectDB();
 	console.log(` App started on port ${port}`);

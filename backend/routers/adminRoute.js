@@ -2,6 +2,7 @@ const { createPlan, getPlans, updatePlan, deletePlan } = require('../controllers
 const { dashboard, AddMember, viewMembers, deleteMember, editMember, assignPlan, getPlanHistory, sendMemberLink, regenerateLink } = require('../controllers/adminController')
 const { adminOnly } = require('../middleware/auth')
 const { getInvoicesByMember, paymentSuccess, getInvoiceById, downloadInvoice, markInvoiceAsPaid } = require('../controllers/invoiceController')
+const { markCashPayment } = require('../controllers/paymentController')
 
 const router = require('express').Router()
 
@@ -63,14 +64,18 @@ router
 
 router
     .route("/invoice/:invoiceId")
-    .get(getInvoiceById)
+    .get(adminOnly, getInvoiceById)
 
 router
     .route("/invoice/:invoiceId/download")
-    .get(downloadInvoice)
+    .get(adminOnly, downloadInvoice)
 
-    router
+router
     .route("/pay/:invoiceId")
-    .get(markInvoiceAsPaid)
+    .get(adminOnly, markInvoiceAsPaid)
+
+router
+    .route("/payment/cash")
+    .post(adminOnly, markCashPayment)
 
 module.exports = router

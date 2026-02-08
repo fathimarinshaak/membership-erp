@@ -4,22 +4,22 @@ import axios from "../../services/axios";
 import { useContext } from "react";
 import { appContent } from "../../context/appContext";
 
-const Sidebar = () => {
+const Sidebar = ({ isOpen, setIsOpen }) => {
   const navigate = useNavigate();
-  const { setIsLoggedIn } = useContext(appContent)
+  const { setIsLoggedIn } = useContext(appContent);
 
   const doLogout = async () => {
     try {
-      const { data } = await axios.post('/api/auth/logout')
+      const { data } = await axios.post("/api/auth/logout");
       if (!data.success) {
-        toast.error(data.msg)
+        toast.error(data.msg);
         return;
       }
-      setIsLoggedIn(false)
-      navigate('/admin/login')
+      setIsLoggedIn(false);
+      navigate("/admin/login");
     } catch (error) {
-      toast.error("admin logout failed!")
-      console.log(error)
+      toast.error("admin logout failed!");
+      console.log(error);
     }
   };
 
@@ -37,6 +37,7 @@ const Sidebar = () => {
               onClick={() => {
                 doLogout();
                 closeToast();
+                setIsOpen(false);
               }}
               className="bg-red-600 text-white px-3 py-1 rounded"
             >
@@ -57,43 +58,63 @@ const Sidebar = () => {
   };
 
   return (
-    <div className="fixed left-0 top-0 h-screen w-64 bg-black/60 backdrop-blur-xl border-r border-white/10 text-gray-200 px-6 py-8 flex flex-col">
-      
-      <h3 className="text-2xl font-bold mb-12 tracking-wide">
-        Admin Panel
-      </h3>
+    <>
+      {/* OVERLAY (mobile only) */}
+      {isOpen && (
+        <div
+          onClick={() => setIsOpen(false)}
+          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+        />
+      )}
 
-      <ul className="flex flex-col gap-3 text-sm">
-        {[
-          { to: "/admin", label: "Home" },
-          { to: "/admin/viewMember", label: "Members" },
-          { to: "/admin/viewplan", label: "Membership Plans" },
-          { to: "/admin/payments", label: "Payments" },
-        ].map((item) => (
-          <li key={item.to}>
-            <NavLink
-              to={item.to}
-              className={({ isActive }) =>
-                `block px-4 py-3 rounded-xl transition ${
-                  isActive
-                    ? "bg-white/10 text-white"
-                    : "text-gray-400 hover:bg-white/5 hover:text-white"
-                }`
-              }
-            >
-              {item.label}
-            </NavLink>
-          </li>
-        ))}
-      </ul>
-
-      <button
-        onClick={handleLogout}
-        className="mt-auto bg-red-500/20 hover:bg-red-500/30 text-red-400 py-3 rounded-xl transition"
+      <div
+        className={`
+          fixed left-0 top-0 h-screen w-64
+          bg-black/60 backdrop-blur-xl
+          border-r border-white/10
+          text-gray-200 px-6 py-8 flex flex-col
+          z-50 transition-transform duration-300
+          ${isOpen ? "translate-x-0" : "-translate-x-full"}
+          lg:translate-x-0
+        `}
       >
-        Logout
-      </button>
-    </div>
+        <h3 className="text-2xl font-bold mb-12 tracking-wide">
+          Admin Panel
+        </h3>
+
+        <ul className="flex flex-col gap-3 text-sm">
+          {[
+            { to: "/admin", label: "Home" },
+            { to: "/admin/viewMember", label: "Members" },
+            { to: "/admin/viewplan", label: "Membership Plans" },
+            { to: "/admin/payments", label: "Payments" },
+          ].map((item) => (
+            <li key={item.to}>
+              <NavLink
+                to={item.to}
+                onClick={() => setIsOpen(false)}
+                className={({ isActive }) =>
+                  `block px-4 py-3 rounded-xl transition ${
+                    isActive
+                      ? "bg-white/10 text-white"
+                      : "text-gray-400 hover:bg-white/5 hover:text-white"
+                  }`
+                }
+              >
+                {item.label}
+              </NavLink>
+            </li>
+          ))}
+        </ul>
+
+        <button
+          onClick={handleLogout}
+          className="mt-auto bg-red-500/20 hover:bg-red-500/30 text-red-400 py-3 rounded-xl transition"
+        >
+          Logout
+        </button>
+      </div>
+    </>
   );
 };
 

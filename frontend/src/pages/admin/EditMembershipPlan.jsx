@@ -13,7 +13,7 @@ const EditMembershipPlan = () => {
   const [category, setCategory] = useState("Basic");
   const navigate = useNavigate();
 
-  // Fetch single plan
+
   useEffect(() => {
     const fetchPlan = async () => {
       try {
@@ -54,121 +54,120 @@ const EditMembershipPlan = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0f0f0f] via-[#121212] to-black flex items-center justify-center p-8">
-      {/* Glass Card */}
-      <div className="w-full max-w-3xl backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl shadow-2xl p-10">
-        
-        <h2 className="text-3xl font-bold text-gray-100 mb-8 text-center">
-          Edit Membership Plan
-        </h2>
+    <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur flex items-center justify-center p-4">
+      <div className="bg-[#181818] border border-white/10 rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto p-6 sm:p-8">
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          
-          {/* Plan Name */}
-          <div>
-            <label className="block text-gray-400 mb-1">Plan Name</label>
+        <div className="flex items-center mb-6">
+          <button
+            onClick={() => navigate(-1)}
+            className="mr-3 text-gray-400 hover:text-gray-200 transition text-xl"
+          >
+            ←
+          </button>
+          <h2 className="text-2xl sm:text-3xl font-bold text-gray-100">
+            Edit Membership Plan
+          </h2>
+        </div>
+
+        <form
+          onSubmit={handleSubmit}
+          className="grid grid-cols-1 sm:grid-cols-2 gap-4"
+        >
+          <div className="col-span-1">
+            <label className="text-sm text-gray-400">Plan Name</label>
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
-              className="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-2 
-                         text-gray-200 placeholder-gray-500 
-                         focus:ring-2 focus:ring-orange-500 focus:outline-none"
+              className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-2 mt-1
+                       text-gray-200 focus:ring-2 focus:ring-orange-500 focus:outline-none"
             />
           </div>
-
-          {/* Duration */}
-          <div>
-            <label className="block text-gray-400 mb-1">Duration (days)</label>
+          <div className="col-span-1">
+            <label className="text-sm text-gray-400">Duration (days)</label>
             <input
               type="number"
               value={duration}
               onChange={(e) => setDuration(e.target.value)}
               required
-              className="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-2 
-                         text-gray-200 placeholder-gray-500 
-                         focus:ring-2 focus:ring-orange-500 focus:outline-none"
+              className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-2 mt-1
+                       text-gray-200 focus:ring-2 focus:ring-orange-500 focus:outline-none"
             />
           </div>
 
-          {/* Price */}
-          <div>
-            <label className="block text-gray-400 mb-1">Price</label>
+          <div className="col-span-1">
+            <label className="text-sm text-gray-400">Price</label>
             <input
               type="number"
               value={price}
               onChange={(e) => setPrice(e.target.value)}
               required
-              className="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-2 
-                         text-gray-200 placeholder-gray-500 
-                         focus:ring-2 focus:ring-orange-500 focus:outline-none"
+              className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-2 mt-1
+                       text-gray-200 focus:ring-2 focus:ring-orange-500 focus:outline-none"
             />
           </div>
-
-          {/* Category */}
-          <div>
-            <label className="block text-gray-400 mb-1">Category</label>
-
-            <div className="relative">
+          <div className="col-span-1">
+            <label className="text-sm text-gray-400">Category</label>
+            <div className="relative mt-1">
               <select
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
-                className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-2 
-                           text-gray-200 focus:ring-2 focus:ring-orange-500 focus:outline-none
-                           appearance-none"
+                className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-2
+                         text-gray-200 focus:ring-2 focus:ring-orange-500 focus:outline-none appearance-none"
               >
-                <option value="Basic" className="bg-[#1a1a1a] text-gray-200">Basic</option>
-                <option value="Trial" className="bg-[#1a1a1a] text-gray-200">Trial</option>
-                <option value="Premium" className="bg-[#1a1a1a] text-gray-200">Premium</option>
-                <option value="Seasonal" className="bg-[#1a1a1a] text-gray-200">Seasonal</option>
+                <option value="Basic">Basic</option>
+                <option value="Trial">Trial</option>
+                <option value="Premium">Premium</option>
+                <option value="Seasonal">Seasonal</option>
               </select>
-
-              {/* Custom arrow */}
-              <span className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
+              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
                 ▼
               </span>
             </div>
           </div>
 
-          {/* Features */}
-          <div>
-            <label className="block text-gray-400 mb-1">Features</label>
+          <div className="col-span-1 sm:col-span-2">
+            <label className="text-sm text-gray-400">Features</label>
             <textarea
               value={features}
               onChange={(e) => setFeatures(e.target.value)}
               required
-              className="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-2 
-                         text-gray-200 placeholder-gray-500 
-                         focus:ring-2 focus:ring-orange-500 focus:outline-none"
-            ></textarea>
+              rows={3}
+              className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-2 mt-1
+                       text-gray-200 focus:ring-2 focus:ring-orange-500 focus:outline-none"
+            />
           </div>
 
-          {/* Active Toggle */}
-          <div className="flex items-center gap-2">
+          <div className="col-span-1 sm:col-span-2 flex items-center gap-2 mt-2">
             <input
               type="checkbox"
               checked={isActive}
               onChange={(e) => setIsActive(e.target.checked)}
               className="w-4 h-4 accent-orange-500"
             />
-            <label className="text-gray-300">Active</label>
+            <label className="text-gray-300 text-sm">Active</label>
           </div>
 
-          {/* Submit */}
+
           <button
             type="submit"
-            className="w-full text-white py-2 px-6 rounded-full text-sm font-semibold transition 
-                       bg-orange-500/20 hover:bg-orange-500/30 
-                       border border-orange-400/40"
+            className="
+            col-span-1 sm:col-span-2
+            mt-4 w-full px-4 py-2 rounded-full text-sm font-semibold
+            bg-orange-500/20 text-orange-400
+            border border-orange-500/40
+            hover:bg-orange-500/30 hover:text-orange-300
+            transition
+          "
           >
             Update Plan
           </button>
-
         </form>
       </div>
     </div>
   );
+
 };
 
 export default EditMembershipPlan;

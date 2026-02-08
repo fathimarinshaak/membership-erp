@@ -1,10 +1,26 @@
-const {userDashboard } = require('../controllers/memberController')
-// const { memberOnly } = require('../middleware/auth')
+const {userDashboard, getInvoices, getMembershipHistory } = require('../controllers/memberController');
+const { createOrder, verifyPayment } = require('../controllers/paymentController');
 
 const router = require('express').Router()
 
 router
     .route("/dashboard/:token")    
     .get(userDashboard);
+
+router
+    .route("/payment/create-order")
+    .post(createOrder)
+
+router
+    .route("/payment/verify")
+    .post(verifyPayment);
+
+router
+    .route("/invoices/:token")
+    .get(getInvoices);
+
+router
+    .route("/membership-history/:token")
+    .get(getMembershipHistory);
 
 module.exports = router

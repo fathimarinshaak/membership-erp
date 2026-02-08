@@ -95,60 +95,88 @@ const ViewMembershipPlans = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#0a0a0a] via-[#111] to-black p-8 text-gray-200">
-      <h2 className="text-3xl font-bold mb-6 tracking-wide">Membership Plans</h2>
+      <h2 className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6 tracking-wide text-gray-100">
+        Membership Plans
+      </h2>
 
-      {/* FILTERS */}
-      <div className="flex flex-wrap gap-4 mb-6">
+      <div className="mb-6 space-y-3 sm:space-y-0 sm:flex sm:flex-wrap sm:items-center sm:gap-4">
 
-        {/* SEARCH */}
-        <input
-          type="text"
-          placeholder="Search..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="bg-white/5 border border-white/10 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/40 text-white"
-        />
+        {/* Filters group */}
+        <div className="flex flex-col gap-3 sm:flex-row sm:gap-4">
 
-        {/* STATUS DROPDOWN */}
-        <select
-          value={filterStatus}
-          onChange={(e) => setFilterStatus(e.target.value)}
-          className="bg-gradient-to-b from-gray-900 to-black 
-          border border-white/10 px-4 py-2 rounded-xl 
-          focus:outline-none focus:ring-2 focus:ring-blue-500/40 
-          text-gray-200 shadow-inner hover:bg-white/10 transition"
-        >
-          <option className="bg-black" value="all">All Status</option>
-          <option className="bg-black" value="active">Active</option>
-          <option className="bg-black" value="inactive">Inactive</option>
-        </select>
+          {/* SEARCH */}
+          <input
+            type="text"
+            placeholder="Search..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="
+        w-full sm:w-64
+        bg-white/5 border border-white/10
+        px-4 py-2 rounded-xl
+        text-white
+        focus:outline-none focus:ring-2 focus:ring-blue-500/40
+      "
+          />
 
-        {/* CATEGORY DROPDOWN */}
-        <select
-          value={filterCategory}
-          onChange={(e) => setFilterCategory(e.target.value)}
-          className="bg-gradient-to-b from-gray-900 to-black 
-          border border-white/10 px-4 py-2 rounded-xl 
-          focus:outline-none focus:ring-2 focus:ring-blue-500/40 
-          text-gray-200 shadow-inner hover:bg-white/10 transition"
-        >
-          <option className="bg-black" value="all">All Categories</option>
-          <option className="bg-black" value="Basic">Basic</option>
-          <option className="bg-black" value="Trial">Trial</option>
-          <option className="bg-black" value="Premium">Premium</option>
-          <option className="bg-black" value="Seasonal">Seasonal</option>
-        </select>
+          {/* STATUS DROPDOWN */}
+          <select
+            value={filterStatus}
+            onChange={(e) => setFilterStatus(e.target.value)}
+            className="
+        relative z-10 focus:z-20 pointer-events-auto
+        w-full sm:w-44
+        bg-gradient-to-b from-gray-900 to-black
+        border border-white/10
+        px-4 py-2 rounded-xl
+        text-gray-200 shadow-inner
+        focus:outline-none focus:ring-2 focus:ring-blue-500/40
+        hover:bg-white/10 transition
+      "
+          >
+            <option className="bg-black" value="all">All Status</option>
+            <option className="bg-black" value="active">Active</option>
+            <option className="bg-black" value="inactive">Inactive</option>
+          </select>
+
+          {/* CATEGORY DROPDOWN */}
+          <select
+            value={filterCategory}
+            onChange={(e) => setFilterCategory(e.target.value)}
+            className="
+        relative z-10 focus:z-20 pointer-events-auto
+        w-full sm:w-52
+        bg-gradient-to-b from-gray-900 to-black
+        border border-white/10
+        px-4 py-2 rounded-xl
+        text-gray-200 shadow-inner
+        focus:outline-none focus:ring-2 focus:ring-blue-500/40
+        hover:bg-white/10 transition
+      "
+          >
+            <option className="bg-black" value="all">All Categories</option>
+            <option className="bg-black" value="Basic">Basic</option>
+            <option className="bg-black" value="Trial">Trial</option>
+            <option className="bg-black" value="Premium">Premium</option>
+            <option className="bg-black" value="Seasonal">Seasonal</option>
+          </select>
+        </div>
 
         {/* ADD PLAN */}
         <button
           onClick={() => navigate("/admin/addPlan")}
-          className="px-4 py-2 rounded-full bg-orange-500/20 border border-orange-500/40 text-orange-400 hover:bg-orange-500/30 transition"
+          className="
+      w-full sm:w-auto sm:ml-auto
+      px-5 py-2.5 rounded-full
+      bg-orange-500/20 border border-orange-500/40
+      text-orange-400 font-semibold
+      hover:bg-orange-500/30 transition
+    "
         >
           Add Plan
         </button>
       </div>
 
-      {/* TABLE */}
       <div className="overflow-x-auto border border-white/10 rounded-2xl bg-white/5 backdrop-blur">
         <table className="min-w-full">
           <thead>
@@ -181,8 +209,8 @@ const ViewMembershipPlans = () => {
                   <td className="px-6 py-4">
                     <span
                       className={`px-3 py-1 rounded-full text-xs font-semibold ${plan.isActive
-                          ? "bg-green-500/20 text-green-400 border border-green-500/30"
-                          : "bg-red-500/20 text-red-400 border border-red-500/30"
+                        ? "bg-green-500/20 text-green-400 border border-green-500/30"
+                        : "bg-red-500/20 text-red-400 border border-red-500/30"
                         }`}
                     >
                       {plan.isActive ? "Active" : "Inactive"}
@@ -219,24 +247,25 @@ const ViewMembershipPlans = () => {
         </table>
       </div>
 
-      {/* MODAL */}
       {showModal && (
-        <div className="fixed inset-0 bg-black/70 backdrop-blur flex items-center justify-center z-50">
-          <div className="bg-[#181818] border border-white/10 rounded-2xl shadow-2xl w-full max-w-lg p-6">
+        <div className="fixed inset-0 bg-black/70 backdrop-blur flex items-center justify-center z-50 p-4 sm:p-0">
+          <div className="bg-[#181818] border border-white/10 rounded-2xl shadow-2xl w-full max-w-lg sm:max-w-lg p-4 sm:p-6">
             <h3 className="text-xl font-bold mb-4 text-blue-400">Plan Features</h3>
             <p className="text-gray-300 whitespace-pre-line">{modalFeatures || "No features listed"}</p>
 
             <div className="flex justify-end mt-6">
               <button
                 onClick={closeModal}
-                className="px-4 py-2 rounded-full bg-blue-500/20 text-blue-400 border border-blue-500/40 hover:bg-blue-500/30 transition"
+                className="px-4 py-2 rounded-full bg-blue-500/20 text-blue-400 border border-blue-500/40 hover:bg-blue-500/30 transition w-full sm:w-auto"
               >
                 Close
               </button>
             </div>
+
           </div>
         </div>
       )}
+
     </div>
   );
 };
