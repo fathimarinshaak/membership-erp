@@ -92,6 +92,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
             <li key={item.to}>
               <NavLink
                 to={item.to}
+                
                 onClick={() => setIsOpen(false)}
                 className={({ isActive }) =>
                   `block px-4 py-3 rounded-xl transition ${

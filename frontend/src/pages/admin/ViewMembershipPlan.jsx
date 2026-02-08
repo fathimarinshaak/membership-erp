@@ -101,7 +101,7 @@ const ViewMembershipPlans = () => {
 
       <div className="mb-6 space-y-3 sm:space-y-0 sm:flex sm:flex-wrap sm:items-center sm:gap-4">
 
-        {/* Filters group */}
+
         <div className="flex flex-col gap-3 sm:flex-row sm:gap-4">
 
           {/* SEARCH */}
@@ -162,17 +162,9 @@ const ViewMembershipPlans = () => {
           </select>
         </div>
 
-        {/* ADD PLAN */}
         <button
           onClick={() => navigate("/admin/addPlan")}
-          className="
-      w-full sm:w-auto sm:ml-auto
-      px-5 py-2.5 rounded-full
-      bg-orange-500/20 border border-orange-500/40
-      text-orange-400 font-semibold
-      hover:bg-orange-500/30 transition
-    "
-        >
+          className=" w-full sm:w-auto sm:ml-auto px-5 py-2.5 rounded-full bg-orange-500/20 border border-orange-500/40 text-orange-400 font-semibold hover:bg-orange-500/30 transition " >
           Add Plan
         </button>
       </div>
