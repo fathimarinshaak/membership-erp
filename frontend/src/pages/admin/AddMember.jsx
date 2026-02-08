@@ -57,12 +57,7 @@ export default function AddMember() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#0f0f0f] via-[#121212] to-black flex flex-col items-center p-4 sm:p-8">
       <div className="w-full max-w-3xl backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl shadow-2xl p-4 sm:p-10">
-        <button
-          onClick={() => navigate(-1)}
-          className="self-start mb-4 flex items-center gap-2 text-white px-4 py-2  transition"
-        >
-          ←
-        </button>
+        
         <h2 className="text-3xl font-bold text-gray-100 mb-6 sm:mb-8 text-center">
           Add New Member
         </h2>
@@ -179,6 +174,8 @@ export default function AddMember() {
           >
             Add Member
           </button>
+           <button type="button" onClick={() => navigate(-1)} className="col-span-1 sm:col-span-2 w-full px-4 py-2 rounded-full  text-sm font-semibold bg-red-500/20 text-red-400  border border-red-500/40 hover:bg-red-500/30  hover:text-red-300 transition" > Close
+         </button>
         </form>
       </div>
     </div>
