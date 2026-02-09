@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router";
+import { useParams, useNavigate } from "react-router";
 import axios from "../../services/axios";
 
 const MembershipHistory = () => {
@@ -7,15 +7,23 @@ const MembershipHistory = () => {
   const [history, setHistory] = useState([]);
 
   useEffect(() => {
-     console.log(token)
+    console.log(token)
     axios
       .get(`/api/member/membership-history/${token}`)
       .then(res => setHistory(res.data));
   }, [token]);
-   console.log(history)
+  console.log(history)
+
+  const navigate = useNavigate();
 
   return (
     <div className="min-h-screen p-10 bg-gradient-to-br from-[#3a3734] via-[#4d4844] to-[#2b2a28]">
+      <button
+        onClick={() => navigate(-1)}
+        className=" mb-6 px-4 py-2 rounded-xl text-sm sm:text-base text-[#f2edea] bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 active:scale-95 transition shadow-lg " >
+        Back
+      </button>
+
       <h1 className="text-3xl font-bold text-[#f2edea] mb-6">
         Membership History
       </h1>

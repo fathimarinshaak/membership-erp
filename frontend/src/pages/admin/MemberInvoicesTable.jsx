@@ -99,8 +99,8 @@ const MemberInvoices = () => {
                   <td className="px-6 py-4 text-center">
                     <span
                       className={`px-3 py-1 rounded-full text-xs font-semibold ${inv.status === "PAID"
-                          ? "bg-green-500/20 text-green-400"
-                          : "bg-red-500/20 text-red-400"
+                        ? "bg-green-500/20 text-green-400"
+                        : "bg-red-500/20 text-red-400"
                         }`}
                     >
                       {inv.status}
@@ -114,18 +114,18 @@ const MemberInvoices = () => {
                     })}
                   </td>
                   <td className="px-6 py-4 text-center">
-    {inv.status === "PAID" ? (
-      <span className="text-gray-400 text-xs">—</span>
-    ) : (
-      <button
-        onClick={() => markAsPaidCash(inv._id)}
-        className="px-3 py-1 text-xs font-semibold rounded-md
+                    {inv.status === "PAID" ? (
+                      <span className="text-gray-400 text-xs">—</span>
+                    ) : (
+                      <button
+                        onClick={() => markAsPaidCash(inv._id)}
+                        className="px-3 py-1 text-xs font-semibold rounded-md
                    bg-green-600 text-white hover:bg-green-700"
-      >
-        Mark Paid (Cash)
-      </button>
-    )}
-  </td>
+                      >
+                        Mark Paid (Cash)
+                      </button>
+                    )}
+                  </td>
                   <td className="px-6 py-4 text-right">
                     <button
                       onClick={() => navigate(`/admin/invoices/${inv._id}`)}

@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router";
+import { useParams, useNavigate } from "react-router";
 import axios from "../../services/axios";
 import { toast } from "react-toastify";
 
 const PaymentHistory = () => {
   const { token } = useParams();
   const [invoices, setInvoices] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     axios
@@ -27,12 +28,11 @@ const PaymentHistory = () => {
 
       const options = {
         key: import.meta.env.VITE_RAZORPAY_API_KEY,
-        order_id: data.orderId,     // ✅ FIXED
-        amount: data.amount,        // ✅ FIXED
+        order_id: data.orderId,
+        amount: data.amount,
         currency: "INR",
         name: "Membership Payment",
         description: invoice.invoiceNumber,
-
         handler: async (response) => {
           try {
             await axios.post("/api/member/payment/verify", {
@@ -61,9 +61,7 @@ const PaymentHistory = () => {
 
   return (
     <div className="min-h-screen p-10 bg-gradient-to-br from-[#3a3734] via-[#4d4844] to-[#2b2a28]">
-      <h1 className="text-3xl font-bold text-[#f2edea] mb-6">
-        Payment History
-      </h1>
+      <h1 className="text-3xl font-bold text-[#f2edea] mb-6">Payment History</h1>
 
       <table className="w-full text-left text-gray-200">
         <thead>
@@ -80,62 +78,50 @@ const PaymentHistory = () => {
         <tbody className="divide-y divide-white/10">
           {invoices.length === 0 ? (
             <tr>
-              <td colSpan="5" className="py-6 text-center text-gray-400">
+              <td colSpan="6" className="py-6 text-center text-gray-400">
                 No invoices found
               </td>
             </tr>
           ) : (
             invoices.map((invoice) => (
               <tr key={invoice._id} className="hover:bg-white/10 transition">
-                <td className="py-2">
-                  {new Date(invoice.createdAt).toLocaleDateString()}
-                </td>
-
-                <td>
-                  {invoice.membershipId?.planId?.name || "—"}
-                </td>
-
+                <td className="py-2">{new Date(invoice.createdAt).toLocaleDateString()}</td>
+                <td>{invoice.membershipId?.planId?.name || "—"}</td>
                 <td>₹{invoice.amount}</td>
-
-                <td
-                  className={`font-semibold ${invoice.status === "PAID"
-                    ? "text-green-400"
-                    : "text-yellow-400"
-                    }`}
-                >
+                <td className={`font-semibold ${invoice.status === "PAID" ? "text-green-400" : "text-yellow-400"}`}>
                   {invoice.status}
                 </td>
-
                 <td>
                   {invoice.status === "PAID" ? (
                     <button
                       disabled
-                      className="px-3 py-1 text-xs rounded-full
-                 bg-gray-500/20 text-gray-400
-                 cursor-not-allowed"
+                      className="px-3 py-1 text-xs rounded-full bg-gray-500/20 text-gray-400 cursor-not-allowed"
                     >
                       Paid
                     </button>
                   ) : (
                     <button
                       onClick={() => payInvoice(invoice)}
-                      className="px-3 py-1 text-xs rounded-full
-                 bg-blue-500/20 text-blue-400
-                 hover:bg-blue-500/30"
+                      className="px-3 py-1 text-xs rounded-full bg-blue-500/20 text-blue-400 hover:bg-blue-500/30"
                     >
                       Pay Now
                     </button>
                   )}
                 </td>
-
                 <td>
-                  *invoice*
+                  <button
+                    onClick={() =>
+                      navigate(`/member/access/${token}/invoice/${invoice._id}`)
+                    }
+                    className="px-3 py-1 text-xs rounded-full bg-blue-600 text-white hover:bg-blue-700"
+                  >
+                    View
+                  </button>
                 </td>
               </tr>
             ))
           )}
         </tbody>
-
       </table>
     </div>
   );
