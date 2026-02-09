@@ -185,7 +185,7 @@ exports.assignPlan = async (req, res) => {
 
 
     const invoice = await Invoice.create({
-      memberId,
+      memberId: req.user._id,
       membershipId: membership._id,
       invoiceNumber: `INV-${Date.now()}`,
       amount: plan.price,
@@ -268,3 +268,4 @@ exports.regenerateLink = async (req, res) => {
     res.status(500).json({ success: false, message: err.message });
   }
 };
+

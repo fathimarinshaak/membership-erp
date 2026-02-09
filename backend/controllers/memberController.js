@@ -1,6 +1,7 @@
 const Member = require('../model/Member')
 const Membership = require("../model/Membership");
 const Invoice = require("../model/Invoice")
+const generatePdf =require('../utils/invoicePdf')
 
 exports.userDashboard = async (req, res) => {
   try {
@@ -59,7 +60,7 @@ exports.getInvoices = async (req, res) => {
   try {
     const { token } = req.params;
 
-    const member = await Member.findOne({ secretToken: token }); // ✅ use secretToken
+    const member = await Member.findOne({ secretToken: token });
     if (!member) return res.status(404).json({ message: "Member not found" });
 
     const invoices = await Invoice.find({ memberId: member._id })
@@ -69,7 +70,7 @@ exports.getInvoices = async (req, res) => {
       })
       .sort({ createdAt: -1 });
 
-    res.json({ invoices }); // or just res.json(invoices)
+    res.json({ invoices }); 
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Failed to fetch invoices" });
@@ -99,5 +100,56 @@ exports.getMembershipHistory = async (req, res) => {
   } catch (err) {
     console.error("Membership history error:", err);
     res.status(500).json({ message: "Server error" });
+  }
+};
+
+exports.viewInvoice = async (req, res) => {
+  try {
+    const invoice = await Invoice.findById(req.params.invoiceId)
+      .populate({
+        path: "membershipId",
+        populate: { path: "planId" }
+      })
+      .populate("memberId");
+
+    if (!invoice) {
+      return res.status(404).json({ success: false, message: "Invoice not found" });
+    }
+
+    res.json({
+      success: true,
+      invoice
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+exports.downloadInvoice = async (req, res) => {
+  try {
+    const invoice = await Invoice.findById(req.params.invoiceId)
+      .populate({
+        path: "membershipId",
+        populate: { path: "planId" }
+      })
+      .populate("memberId");
+
+    if (!invoice) {
+      return res.status(404).send("Invoice not found");
+    }
+
+    const pdfBuffer = await generatePdf(invoice); 
+
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename=invoice-${invoice.invoiceNumber}.pdf`
+    );
+
+    res.end(pdfBuffer);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Failed to generate PDF");
   }
 };
