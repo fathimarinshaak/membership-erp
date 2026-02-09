@@ -4,6 +4,7 @@ import axios from "../../services/axios";
 import { toast } from "react-toastify";
 
 const PaymentHistory = () => {
+  const navigate = useNavigate()
   const { token } = useParams();
   const [invoices, setInvoices] = useState([]);
 
@@ -58,7 +59,8 @@ const PaymentHistory = () => {
       toast.error("Payment failed");
     }
   };
-  const navigate = useNavigate()
+
+  
   return (
     <div className="min-h-screen p-4 sm:p-10 bg-gradient-to-br from-[#3a3734] via-[#4d4844] to-[#2b2a28]">
       <button
@@ -124,7 +126,16 @@ const PaymentHistory = () => {
                       </button>
                     )}
                   </td>
-                  <td>*invoice*</td>
+                  <td>
+                    <button
+                      onClick={() => navigate(`/member/access/${token}/invoices/${invoice._id}`)}
+                      className="px-3 py-1 rounded-full text-sm font-semibold
+                        bg-blue-500/15 text-blue-400 border border-blue-500/30
+                        hover:bg-blue-500/25 hover:text-blue-300 transition"
+                    >
+                      View
+                    </button>
+                  </td>
                 </tr>
               ))
             )}

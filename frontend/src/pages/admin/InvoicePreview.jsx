@@ -3,15 +3,19 @@ import axios from "../../services/axios";
 import { useParams, useNavigate } from "react-router";
 
 const InvoicePreview = () => {
-    const { invoiceId } = useParams();
     const navigate = useNavigate();
     const [invoice, setInvoice] = useState(null);
     const [error, setError] = useState("");
+    const { invoiceId, token } = useParams();
+
+    const apiUrl = token
+        ? `/api/member/invoice/${invoiceId}`
+        : `/api/admin/invoice/${invoiceId}`;
 
     useEffect(() => {
         const fetchInvoice = async () => {
             try {
-                const res = await axios.get(`/api/admin/invoice/${invoiceId}`);
+                const res = await axios.get(apiUrl);
                 if (res.data.success) {
                     setInvoice(res.data.invoice);
                 } else {
@@ -102,13 +106,17 @@ const InvoicePreview = () => {
                     >
                         Back
                     </button>
+                        <a
+                            href={
+                                token
+                                    ? `/api/member/invoice/${invoice._id}/download`
+                                    : `/api/admin/invoice/${invoice._id}/download`
+                            }
+                            className="px-4 py-2 bg-black text-white rounded hover:bg-gray-800 transition"
+                        >
 
-                    <a
-                        href={`/api/admin/invoice/${invoice._id}/download`}
-                        className="px-4 py-2 bg-black text-white rounded hover:bg-gray-800 transition"
-                    >
-                        Download PDF
-                    </a>
+                            Download PDF
+                        </a>
                 </div>
             </div>
         </div>

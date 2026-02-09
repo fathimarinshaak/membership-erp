@@ -58,7 +58,6 @@ exports.userDashboard = async (req, res) => {
 exports.getInvoices = async (req, res) => {
   try {
     const { token } = req.params;
-    console.log(token)
 
     const member = await Member.findOne({ secretToken: token }); // ✅ use secretToken
     if (!member) return res.status(404).json({ message: "Member not found" });

@@ -1,3 +1,4 @@
+const { getInvoiceById, downloadInvoice } = require('../controllers/invoiceController');
 const {userDashboard, getInvoices, getMembershipHistory } = require('../controllers/memberController');
 const { createOrder, verifyPayment } = require('../controllers/paymentController');
 
@@ -22,5 +23,14 @@ router
 router
     .route("/membership-history/:token")
     .get(getMembershipHistory);
+
+router
+    .route("/invoice/:invoiceId")
+    .get(getInvoiceById)
+
+router
+    .route("/invoice/:invoiceId/download")
+    .get(downloadInvoice)
+
 
 module.exports = router
