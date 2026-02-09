@@ -185,13 +185,12 @@ exports.assignPlan = async (req, res) => {
 
 
     const invoice = await Invoice.create({
-      memberId: req.user._id,
+      memberId,
       membershipId: membership._id,
       invoiceNumber: `INV-${Date.now()}`,
       amount: plan.price,
       status: "PENDING"
     });
-
     return res.json({
       success: true,
       message: "Plan assigned & invoice generated",
