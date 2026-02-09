@@ -1,7 +1,7 @@
 const { createPlan, getPlans, updatePlan, deletePlan } = require('../controllers/membershipController')
 const { dashboard, AddMember, viewMembers, deleteMember, editMember, assignPlan, getPlanHistory, sendMemberLink, regenerateLink } = require('../controllers/adminController')
 const { adminOnly } = require('../middleware/auth')
-const { getInvoicesByMember, paymentSuccess, getInvoiceById, downloadInvoice, markInvoiceAsPaid } = require('../controllers/invoiceController')
+const { getInvoicesByMember, paymentSuccess, getInvoiceById, downloadInvoice, markInvoiceAsPaid, getAllPayments } = require('../controllers/invoiceController')
 const { markCashPayment } = require('../controllers/paymentController')
 
 const router = require('express').Router()

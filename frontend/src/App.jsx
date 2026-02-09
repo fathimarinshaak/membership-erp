@@ -16,6 +16,7 @@ import MemberHome from "./pages/member/MemberHome";
 import InvoicePreview from "./pages/admin/InvoicePreview";
 import PaymentHistory from "./pages/member/PaymentHistory";
 import MembershipHistory from "./pages/member/MembershipHistory";
+import MemberInvoicePreview from "./pages/member/MemberInvoicePreview";
 
 export default function App() {
   return (
@@ -43,8 +44,8 @@ export default function App() {
             <Route path="addPlan" element={<AddMembershipPlan />} />
             <Route path="viewPlan" element={<ViewMembershipPlans />} />
             <Route path="editPlan/:id" element={<EditMembershipPlan />} />
-            <Route path="members/:memberId/invoices" element={<MemberInvoicesTable />}/>
-            <Route  path="invoices/:invoiceId" element={<InvoicePreview/>} />
+            <Route path="members/:memberId/invoices" element={<MemberInvoicesTable />} />
+            <Route path="invoices/:invoiceId" element={<InvoicePreview />} />
           </Route>
         </Route>
 
@@ -52,8 +53,8 @@ export default function App() {
           <Route index element={<MemberHome />} />
           <Route path="payments" element={<PaymentHistory />} />
           <Route path="memberships" element={<MembershipHistory />} />
+          <Route path="invoice/:invoiceId" element={<MemberInvoicePreview />} />
         </Route>
-
       </Routes>
     </>
   );
