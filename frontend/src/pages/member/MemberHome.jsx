@@ -33,12 +33,11 @@ to-[#2b2a28]
 
       <div className="w-full max-w-4xl animate-fadeIn">
         <h1 className="text-4xl font-bold mb-8 text-[#f2edea]   drop-shadow-xl text-center tracking-wide">
-          Member Dashboard
+          Dashboard
         </h1>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-          {/* MEMBER DETAILS */}
           <div className="backdrop-blur-2xl bg-white/10 border border-white/10 
                         p-6 rounded-2xl shadow-2xl 
                         hover:bg-white/15 hover:scale-[1.02] 
@@ -52,7 +51,6 @@ to-[#2b2a28]
             <p className="text-gray-100">WhatsApp: {member.whatsappNumber}</p>
           </div>
 
-          {/* CURRENT PLAN */}
           {currentPlan && (
             <div className="backdrop-blur-2xl bg-white/10 border border-white/10 
                           p-6 rounded-2xl shadow-2xl 
@@ -99,39 +97,38 @@ to-[#2b2a28]
 
         <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-6">
 
-  {/* PAYMENT HISTORY BUTTON */}
-  <div
-    onClick={() => navigate(`/member/access/${token}/payments`)}
-    className="cursor-pointer backdrop-blur-2xl bg-white/10 border border-white/10 
+
+          <div
+            onClick={() => navigate(`/member/access/${token}/payments`)}
+            className="cursor-pointer backdrop-blur-2xl bg-white/10 border border-white/10 
                p-6 rounded-2xl shadow-xl
                hover:bg-white/20 hover:scale-[1.02]
                transition-all duration-300 text-center"
-  >
-    <h2 className="text-xl font-semibold text-[#f2edea]">
-      💳 Payment History
-    </h2>
-    <p className="text-gray-300 mt-2">
-      View & pay pending invoices
-    </p>
-  </div>
+          >
+            <h2 className="text-xl font-semibold text-[#f2edea]">
+              💳 Payment History
+            </h2>
+            <p className="text-gray-300 mt-2">
+              View & pay pending invoices
+            </p>
+          </div>
 
-  {/* MEMBERSHIP HISTORY BUTTON */}
-  <div
-    onClick={() => navigate(`/member/access/${token}/memberships`)}
-    className="cursor-pointer backdrop-blur-2xl bg-white/10 border border-white/10 
+          <div
+            onClick={() => navigate(`/member/access/${token}/memberships`)}
+            className="cursor-pointer backdrop-blur-2xl bg-white/10 border border-white/10 
                p-6 rounded-2xl shadow-xl
                hover:bg-white/20 hover:scale-[1.02]
                transition-all duration-300 text-center"
-  >
-    <h2 className="text-xl font-semibold text-[#f2edea]">
-      📜 Membership History
-    </h2>
-    <p className="text-gray-300 mt-2">
-      View past & expired memberships
-    </p>
-  </div>
+          >
+            <h2 className="text-xl font-semibold text-[#f2edea]">
+              📜 Membership History
+            </h2>
+            <p className="text-gray-300 mt-2">
+              View past & expired memberships
+            </p>
+          </div>
 
-</div>
+        </div>
 
       </div>
     </div>

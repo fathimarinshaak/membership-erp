@@ -58,12 +58,7 @@ const EditMembershipPlan = () => {
       <div className="bg-[#181818] border border-white/10 rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto p-6 sm:p-8">
 
         <div className="flex items-center mb-6">
-          <button
-            onClick={() => navigate(-1)}
-            className="mr-3 text-gray-400 hover:text-gray-200 transition text-xl"
-          >
-            ←
-          </button>
+
           <h2 className="text-2xl sm:text-3xl font-bold text-gray-100">
             Edit Membership Plan
           </h2>
@@ -148,20 +143,10 @@ const EditMembershipPlan = () => {
             />
             <label className="text-gray-300 text-sm">Active</label>
           </div>
-
-
-          <button
-            type="submit"
-            className="
-            col-span-1 sm:col-span-2
-            mt-4 w-full px-4 py-2 rounded-full text-sm font-semibold
-            bg-orange-500/20 text-orange-400
-            border border-orange-500/40
-            hover:bg-orange-500/30 hover:text-orange-300
-            transition
-          "
-          >
+          <button type="submit" className=" col-span-1 sm:col-span-2 mt-4 w-full px-4 py-2 rounded-full text-sm font-semibold bg-orange-500/20 text-orange-400 border border-orange-500/40 hover:bg-orange-500/30 hover:text-orange-300 transition " >
             Update Plan
+          </button>
+          <button type="button" onClick={() => navigate(-1)} className="col-span-1 sm:col-span-2 w-full px-4 py-2 rounded-full  text-sm font-semibold bg-red-500/20 text-red-400  border border-red-500/40 hover:bg-red-500/30  hover:text-red-300 transition" > Close
           </button>
         </form>
       </div>

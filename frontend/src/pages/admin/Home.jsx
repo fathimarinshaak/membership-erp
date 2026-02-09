@@ -6,14 +6,14 @@ const Home = () => {
   return (
     <div className="flex items-center justify-center min-h-[80vh]">
       <div className="w-full max-w-3xl">
-        
+
         <h1 className="text-4xl font-bold text-gray-100 mb-12 text-center tracking-wide">
           Admin Dashboard
         </h1>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          
-          
+
+
           <div
             onClick={() => navigate("/admin/addMember")}
             className="cursor-pointer backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl p-10 text-center shadow-xl hover:bg-white/10 transition"
@@ -26,7 +26,7 @@ const Home = () => {
             </p>
           </div>
 
-         
+
           <div
             onClick={() => navigate("/admin/viewMember")}
             className="cursor-pointer backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl p-10 text-center shadow-xl hover:bg-white/10 transition"
