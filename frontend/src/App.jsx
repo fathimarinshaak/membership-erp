@@ -53,7 +53,7 @@ export default function App() {
           <Route index element={<MemberHome />} />
           <Route path="payments" element={<PaymentHistory />} />
           <Route path="memberships" element={<MembershipHistory />} />
-          <Route path="invoice/:invoiceId" element={<MemberInvoicePreview />} />
+          <Route  path="invoices/:invoiceId" element={<InvoicePreview/>} />
         </Route>
       </Routes>
     </>

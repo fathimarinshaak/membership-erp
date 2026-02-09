@@ -87,6 +87,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
             { to: "/admin", label: "Home" },
             { to: "/admin/viewMember", label: "Members" },
             { to: "/admin/viewplan", label: "Membership Plans" },
+            // { to: "/admin/payments", label: "Payments" },
           ].map((item) => (
             <li key={item.to}>
               <NavLink

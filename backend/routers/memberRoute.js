@@ -1,4 +1,5 @@
-const {userDashboard, getInvoices, getMembershipHistory, viewInvoice, downloadInvoice } = require('../controllers/memberController');
+const { getInvoiceById, downloadInvoice } = require('../controllers/invoiceController');
+const {userDashboard, getInvoices, getMembershipHistory } = require('../controllers/memberController');
 const { createOrder, verifyPayment } = require('../controllers/paymentController');
 
 const router = require('express').Router()
@@ -25,10 +26,11 @@ router
 
 router
     .route("/invoice/:invoiceId")
-    .get(viewInvoice)
+    .get(getInvoiceById)
 
 router
     .route("/invoice/:invoiceId/download")
     .get(downloadInvoice)
+
 
 module.exports = router
