@@ -2,7 +2,7 @@ import Login from "./pages/admin/AdminLogin";
 import ViewMember from "./pages/admin/ViewMembers";
 import Home from "./pages/admin/Home";
 import AdminLayout from "./layouts/AdminLayout";
-import { Route, Routes } from "react-router";
+import { Route, Routes,Navigate } from "react-router";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import AdminGuard from "./guards/adminguard";
@@ -33,6 +33,7 @@ export default function App() {
 
       <Routes>
         {/* PUBLIC */}
+        <Route path="/" element={<Navigate to="/admin/login" replace />} />
         <Route path="/admin/login" element={<Login />} />
 
         {/* PROTECTED ADMIN ROUTES */}
@@ -48,6 +49,7 @@ export default function App() {
             <Route path="invoices/:invoiceId" element={<InvoicePreview />} />
           </Route>
         </Route>
+        
 
         <Route path="/member/access/:token" element={<MemberLayout />}>
           <Route index element={<MemberHome />} />
@@ -55,6 +57,7 @@ export default function App() {
           <Route path="memberships" element={<MembershipHistory />} />
           <Route  path="invoices/:invoiceId" element={<InvoicePreview/>} />
         </Route>
+        <Route path="*" element={<Navigate to="/admin/login" replace />} />
       </Routes>
     </>
   );
